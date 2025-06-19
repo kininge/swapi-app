@@ -1,3 +1,18 @@
+@import './components/ui/button.css';
+@import './components/ui/card.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+body {
+  width: 100vw;
+  height: 100vh;
+  @apply bg-theme-background;
+}
