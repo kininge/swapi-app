@@ -22,3 +22,18 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Jest coverage output
+coverage/
+
+# Jest cache (improves performance but not needed in repo)
+jest-cache/
+jest-report/
+.cache/
+.tmp/
+
+# Snapshot test outputs (optional, only ignore if you don't want to commit them)
+*.snap
+
+# React Testing Library logs (only if you’re storing any temp logs)
+*.log

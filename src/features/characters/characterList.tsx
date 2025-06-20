@@ -14,7 +14,7 @@ const ITEM_HEIGHT = 160;
 export const CharacterList: React.FC = () => {
   const [page, setPage] = useState(1);
   const [characters, setCharacters] = useState<Character[]>([]);
-  const { data, isLoading } = useGetCharactersQuery({ page });
+  const { data, isLoading } = useGetCharactersQuery({ page }) || { data: null, isLoading: false };
   const [hasMore, setHasMore] = useState(true);
   const loaderRef = useRef<HTMLDivElement | null>(null);
 
@@ -32,7 +32,6 @@ export const CharacterList: React.FC = () => {
     if (!data || characters.length === 0) return;
 
     const observer = new IntersectionObserver((entries: IntersectionObserverEntry[]) => {
-      console.log('------> entries: ', entries);
       // check is user scroll to bottom
       if (entries[0].isIntersecting && isLoading === false && hasMore) {
         setPage((previousPage) => previousPage + 1); // next page data load
@@ -64,23 +63,31 @@ export const CharacterList: React.FC = () => {
       <h1 className="text-3xl mb-4 font-display text-theme-primary">Characters</h1>
 
       {/* start wars characters */}
-      <List
-        height={window.innerHeight}
-        itemCount={characters.length}
-        itemSize={ITEM_HEIGHT}
-        width="100%"
-      >
-        {renderCharacterCard}
-      </List>
+      <div data-testid="character-list-container">
+        <List
+          height={window.innerHeight}
+          itemCount={characters.length}
+          itemSize={ITEM_HEIGHT}
+          width="100%"
+        >
+          {renderCharacterCard}
+        </List>
+      </div>
 
       {/* loading */}
-      <div ref={loaderRef} className="h-16 flex justify-center items-center">
+      <div
+        ref={loaderRef}
+        data-testid="loader-bottom"
+        className="h-16 flex justify-center items-center"
+      >
         {isLoading && <Loader />}
       </div>
 
       {/* on api fail or no data */}
-      {!isLoading && characters.length === 0 && (
-        <p className="text-center text-gray-400">No characters found.</p>
+      {isLoading === false && characters.length === 0 && (
+        <p role="error-message" className="text-center text-gray-400">
+          No characters found.
+        </p>
       )}
     </div>
   );

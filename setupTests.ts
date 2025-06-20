@@ -1,9 +1,11 @@
 import '@testing-library/jest-dom';
-import { server } from './mocks/server';
+import 'whatwg-fetch';
 
-// Start API mocking before all tests
-beforeAll(() => server.listen());
-// Reset handlers after each test
-afterEach(() => server.resetHandlers());
-// Clean up once tests are done
-afterAll(() => server.close());
+beforeAll(() => {
+  global.IntersectionObserver = class {
+    constructor(cb: any, options?: any) {}
+    observe() {}
+    disconnect() {}
+    unobserve() {}
+  } as any;
+});
