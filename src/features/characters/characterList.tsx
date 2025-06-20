@@ -52,7 +52,7 @@ export const CharacterList: React.FC = () => {
   const renderCharacterCard = ({ index, style }: { index: number; style: React.CSSProperties }) => {
     const character = characters[index];
     return (
-      <div style={style} className="p-2">
+      <div id={character.uid} style={style} data-testid="character-card" className="p-2">
         <Card title={character.name} subtitle={`ID: ${character.uid}`} />
       </div>
     );

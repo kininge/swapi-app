@@ -64,7 +64,7 @@ It covers architecture, folder structure, conventions, and testing strategy.
 | --------------------- | -------------------------- |
 | Jest                  | Unit testing               |
 | React Testing Library | UI interaction & rendering |
-| Cypress (Planned)     | Integration & E2E tests    |
+| Cypress               | Integration & E2E tests    |
 
 ### ✅ Unit Tests (via Jest)
 
@@ -75,13 +75,42 @@ It covers architecture, folder structure, conventions, and testing strategy.
 
 ### 🔍 Integration Tests (via Cypress)
 
-* Infinite scroll behavior
-* Detail page navigation
-* User journey & happy path
+* **Cypress Setup**
+  - Configured using `cypress.config.cjs`
+  - Test files live under `cypress/e2e/`
+  - Support files configured under `cypress/support/`
+
+* **CharacterList Integration Test**
+  - Verifies infinite scroll behavior using `react-window`
+  - Scroll logic targets first child of `[data-testid="character-list-container"]`
+  - DOM item change is verified by comparing `data-character-id` before and after scroll
+  - Example:
+    ```ts
+    cy.get('[data-testid="character-card"]')
+      .first()
+      .invoke("attr", "data-character-id")
+      .then((initialId) => {
+        cy.get('[data-testid="character-list-container"]')
+          .children()
+          .first()
+          .scrollTo("bottom");
+        cy.wait(1500);
+        cy.get('[data-testid="character-card"]')
+          .first()
+          .invoke("attr", "data-character-id")
+          .should((newId) => {
+            expect(newId).not.to.eq(initialId);
+          });
+      });
+    ```
+
+* Additional integration tests will verify:
+  - Detail page navigation
+  - User journeys and edge cases
 
 ### ❌ Dropped: MSW
 
-Although we considered MSW for API mocking in unit tests, we dropped it due to polyfill issues in Node 20+ (e.g. `BroadcastChannel`, `TransformStream`).
+Although we considered MSW for API mocking in unit tests, we dropped it due to polyfill issues in Node 20+ (e.g. `BroadcastChannel`, `TransformStream`).  
 Instead, RTK Query hooks are mocked directly.
 
 ---
@@ -148,6 +177,5 @@ colors: {
 
 ---
 
-#### ✍️ Document updated on: 2025-06-20
-
-#### 👨‍💻 Maintainer: [Pritam Kininge](https://github.com/kininge)
+> ✍️ Document updated on: 2025-06-20
+> 👨‍💻 Maintainer: [Pritam Kininge](https://github.com/kininge)
