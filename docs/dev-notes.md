@@ -1,7 +1,7 @@
 # 🛠️ Developer Notes — Swapi App
 
-This document provides technical insight for developers working on the Swapi App.  
-It covers architecture, folder structure, conventions, and future work.
+This document provides technical insight for developers working on the Swapi App.
+It covers architecture, folder structure, conventions, and testing strategy.
 
 ---
 
@@ -17,18 +17,16 @@ It covers architecture, folder structure, conventions, and future work.
 │ ├── store/              # Redux store setup
 │ ├── constants/          # API endpoints, theme values
 │ ├── App.tsx             # Root component
-│ ├── mocks/
-│ │ ├── handlers.ts       # Mock API handlers
-│ │ └── server.ts         # MSW server for testing
+│ ├── mocks/              # (Legacy) MSW mock handlers — deprecated
 │ └── main.tsx            # Entry point with <Provider>
 │
-├── setupTests.ts         # Global test setup (includes MSW)
+├── setupTests.ts         # Global test setup for Jest
 ├── docs/                 # Developer documentation
-│   └── dev-notes.md	    # development notes
-├── scripts/
-│   └── phase1-setup.sh	  # project setup nodes
-├── public/               # Vite static files              
-├── .eslintrc.json        # Linting config
+│   └── dev-notes.md      # Development notes
+├── scripts/              # Project setup scripts
+│   └── phase1-setup.sh
+├── public/               # Static files
+├── .eslintrc.json        # ESLint config
 ├── .prettierrc           # Prettier config
 ├── tailwind.config.js    # Tailwind theme customization
 ├── index.html            # App container
@@ -39,24 +37,74 @@ It covers architecture, folder structure, conventions, and future work.
 
 ## 🔌 API Integration
 
-- SWAPI base URL is configured in `/constants/api.constant.ts`
-- API is accessed via `services/characterApi.ts` using **RTK Query**
-- Query: `useGetCharactersQuery({ page })`
+* SWAPI base URL is configured in `/constants/api.constant.ts`
+* Characters fetched using RTK Query via `useGetCharactersQuery({ page })`
+* Pagination handled via `next` field in response
 
 ---
 
 ## ♾️ Infinite Scroll Behavior
 
-- Implemented with `IntersectionObserver`
-- Triggered when `<div ref={loaderRef}>` enters viewport
-- Uses `react-window` for virtualization (fixed-height rendering)
-- Auto-increments page state if `data.next` exists
+* Built using `IntersectionObserver`
+* Trigger is a `<div ref={loaderRef}>` that becomes visible on scroll
+* `react-window` is used for virtualization (fixed-height list items)
+* Characters load in batches as user scrolls
+
+### ⚠️ Dev Tip
+
+`react-window` only renders visible items — DOM-based scroll detection must target outer wrapper or observer region.
+
+---
+
+## 🧪 Testing Strategy
+
+### 🧰 Tools Used
+
+| Tool                  | Purpose                    |
+| --------------------- | -------------------------- |
+| Jest                  | Unit testing               |
+| React Testing Library | UI interaction & rendering |
+| Cypress (Planned)     | Integration & E2E tests    |
+
+### ✅ Unit Tests (via Jest)
+
+* Loader rendering
+* Error and empty states
+* Virtualized list logic (limited due to react-window)
+* RTK Query mocked using direct mockReturnValue pattern
+
+### 🔍 Integration Tests (via Cypress)
+
+* Infinite scroll behavior
+* Detail page navigation
+* User journey & happy path
+
+### ❌ Dropped: MSW
+
+Although we considered MSW for API mocking in unit tests, we dropped it due to polyfill issues in Node 20+ (e.g. `BroadcastChannel`, `TransformStream`).
+Instead, RTK Query hooks are mocked directly.
+
+---
+
+## ✅ Test Coverage Targets
+
+* Core logic >85%
+* Components: smoke + render path
+* Critical flows covered in Cypress
+
+---
+
+## 🔗 Navigation Strategy
+
+* React Router DOM manages page navigation
+* Pages live under `/pages`
+* Routes defined in `/routes`
 
 ---
 
 ## 🎨 Theming
 
-Custom Tailwind color palette in `tailwind.config.js`:
+Custom Tailwind palette (tailwind.config.js):
 
 ```js
 colors: {
@@ -71,39 +119,35 @@ colors: {
 
 ## ✅ Coding Guidelines
 
-- All files in src/ are TypeScript (.ts/.tsx)
-- Component names: PascalCase
-- State slices and API files: camelCase
-- Avoid any; prefer strong typing
-- Use clsx for dynamic class names
+* File types: `.ts` / `.tsx` only
+* Naming: camelCase for components, functions and hooks
+* Prefer `clsx()` for conditional classes
+* Avoid `any`; strong typing required
 
 ---
 
-## 🧪 Testing Strategy
+## 🔐 Environment / Secrets
 
-### 📦 Tools Used
-
-- ✅ Jest – Unit test runner
-- ✅ React Testing Library – Render and interact with components
-- ✅ MSW (Mock Service Worker) – API mocking (v2 syntax with http and HttpResponse)
-
-### 🧪 Setup Notes
-
-- Global test setup is defined in src/setupTests.ts
-- MSW handlers live in src/mocks/handlers.ts
-- Mock server is configured in src/mocks/server.ts
-- Jest is configured via jest.config.ts at the project root
+* No environment variables needed currently
+* Future secrets (if any) should go in `.env.local` (gitignored)
 
 ---
 
-## 🤝 Contributing
+## 🧹 Lint + Prettier
 
-- Fork the repo: https://github.com/kininge/swapi-app
-- Create a branch: feat/your-feature-name
-- Write/update relevant tests and docs
-- Open a PR with detailed description
+* ESLint + Prettier are configured
+* Husky not added yet but planned for future commit hooks
 
---- 
+---
+
+## 🧠 Developer Tips
+
+* IntersectionObserver needs real DOM scroll context — virtualized lists might require mocking container scroll.
+* Jest must mock all data synchronously; async updates need `await waitFor()`.
+* Don’t forget: `coverage/` and test-generated data folders are gitignored.
+
+---
 
 #### ✍️ Document updated on: 2025-06-20
+
 #### 👨‍💻 Maintainer: [Pritam Kininge](https://github.com/kininge)
