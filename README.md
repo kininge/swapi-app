@@ -1,64 +1,84 @@
-<!-- @format -->
+# ⭐ Swapi App
 
-# React + TypeScript + Vite
+A modern, performant, and accessible web app that lists Star Wars characters using data from [SWAPI.tech](https://swapi.tech/).  
+Built with **React**, **TypeScript**, **RTK Query**, **TailwindCSS**, and **react-window** for blazing-fast rendering.
 
-This template provides a minimal setup to get React working in Vite with HMR and
-some ESLint rules.
+---
 
-Currently, two official plugins are available:
+## ✅ Features
 
--   [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react)
-    uses [Babel](https://babeljs.io/) for Fast Refresh
--   [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc)
-    uses [SWC](https://swc.rs/) for Fast Refresh
+- ♾️ Infinite Scroll with virtualization (`react-window`)
+- 🎨 Star Wars-themed dark UI with custom Tailwind config
+- 🔌 RTK Query-based data fetching and caching
+- 🧪 Modern testing setup with Jest + RTL + MSW
+- 📚 Dev Docs included in `/docs`
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend updating the
-configuration to enable type-aware lint rules:
+## 🛠️ Tech Stack
 
-```ts
-export default tseslint.config({
-	extends: [
-		// Remove ...tseslint.configs.recommended and replace with this
-		...tseslint.configs.recommendedTypeChecked,
-		// Alternatively, use this for stricter rules
-		...tseslint.configs.strictTypeChecked,
-		// Optionally, add this for stylistic rules
-		...tseslint.configs.stylisticTypeChecked,
-	],
-	languageOptions: {
-		// other options...
-		parserOptions: {
-			project: ["./tsconfig.node.json", "./tsconfig.app.json"],
-			tsconfigRootDir: import.meta.dirname,
-		},
-	},
-});
+| Tech              | Purpose                                           |
+| ----------------- | ------------------------------------------------- |
+| React + Vite      | Frontend Framework + Build Tool                   |
+| TypeScript        | Type Safety                                       |
+| Tailwind CSS      | Utility-first Styling                             |
+| Redux Toolkit     | State Management & API Layer (RTK Query)          |
+| react-window      | Virtualized List for performant infinite scroll   |
+| Jest              | Unit Testing Framework                            |
+| React Testing Library | UI Testing Utilities                        |
+| MSW (Mock Service Worker) | API mocking for unit/integration tests  |
+
+---
+
+## 📦 Setup Instructions
+
+```bash
+# Clone the repo
+git clone https://github.com/kininge/swapi-app.git
+cd swapi-app
+
+# Install dependencies
+yarn
+
+# Start the app
+yarn dev
+
+# Note: App will run at: http://localhost:5173
 ```
 
-You can also install
-[eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x)
-and
-[eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom)
-for React-specific lint rules:
+## 🗂️ Project Structure
 
-```js
-// eslint.config.js
-import reactX from "eslint-plugin-react-x";
-import reactDom from "eslint-plugin-react-dom";
-
-export default tseslint.config({
-	plugins: {
-		// Add the react-x and react-dom plugins
-		"react-x": reactX,
-		"react-dom": reactDom,
-	},
-	rules: {
-		// other rules...
-		// Enable its recommended typescript rules
-		...reactX.configs["recommended-typescript"].rules,
-		...reactDom.configs.recommended.rules,
-	},
-});
 ```
+.
+├── src/
+│   ├── assets/       	  # Media storage
+│   ├── components/       # Reusable UI components
+│   ├── features/         # Feature-specific UI + logic
+│   ├── services/         # RTK Query API setup
+│   ├── store/            # Redux store config
+│   ├── constants/        # Centralized config (API URLs, theme)
+│   ├── hooks/        	  # Custom hooks
+│   ├── pages/        	  # Screens in App
+│   ├── routes/        	  # Routing
+│   ├── index.css         # Root css
+│   └── App.tsx           # Root component
+│
+├── index.html
+├── README.md
+
+```
+
+## 🧠 Upcoming Features
+
+- Character Detail View
+- Search Functionality
+- Unit & Integration Tests
+- Accessibility Audit
+- Performance Optimization
+
+## 👨‍💻 Author
+
+Pritam Kininge  
+[GitHub](https://github.com/kininge) |
+[LinkedIn](https://linkedin.com/in/pritam-kininge) |
+[Leetcode](https://leetcode.com/u/kininge007/)
