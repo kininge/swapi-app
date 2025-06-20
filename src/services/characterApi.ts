@@ -19,8 +19,8 @@ export const characterAPI = createApi({
   reducerPath: 'characterAPI',
   baseQuery: fetchBaseQuery({ baseUrl: BASE_URL }),
   endpoints: (builder) => ({
-    getCharacters: builder.query<CharacterListResponse, number | void>({
-      query: (page = 1, pageLimit = 10) => ENDPOINTS.CHARACTER.LIST(page ?? 1, pageLimit ?? 10),
+    getCharacters: builder.query<CharacterListResponse, { page: number; limit?: number }>({
+      query: ({ page = 1, limit = 10 }) => ENDPOINTS.CHARACTER.LIST(page, limit),
     }),
   }),
 });
