@@ -5,11 +5,6 @@ describe('CharacterList Integration', () => {
     cy.visit('/');
   });
 
-  // No data condition check
-  // Error condition check
-  // ==>
-  // ==> On Character card click move to next screen check
-
   // Character cards render check
   it('character card rendered', () => {
     // character-card's count
