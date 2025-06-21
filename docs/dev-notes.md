@@ -1,6 +1,6 @@
 # 🛠️ Developer Notes — Swapi App
 
-This document provides technical insight for developers working on the Swapi App.
+This document provides technical insight for developers working on the Swapi App.  
 It covers architecture, folder structure, conventions, and testing strategy.
 
 ---
@@ -32,6 +32,9 @@ It covers architecture, folder structure, conventions, and testing strategy.
 ├── index.html            # App container
 └── README.md             # Project info
 ```
+
+---
+
 
 ---
 
@@ -72,41 +75,21 @@ It covers architecture, folder structure, conventions, and testing strategy.
 * Error and empty states
 * Virtualized list logic (limited due to react-window)
 * RTK Query mocked using direct mockReturnValue pattern
+* Route rendering with `MemoryRouter`
 
 ### 🔍 Integration Tests (via Cypress)
 
 * **Cypress Setup**
-  - Configured using `cypress.config.cjs`
-  - Test files live under `cypress/e2e/`
-  - Support files configured under `cypress/support/`
+  - 📂 See: [`docs/cypress-setup.md`](./cypress-setup.md)
 
 * **CharacterList Integration Test**
   - Verifies infinite scroll behavior using `react-window`
   - Scroll logic targets first child of `[data-testid="character-list-container"]`
   - DOM item change is verified by comparing `data-character-id` before and after scroll
-  - Example:
-    ```ts
-    cy.get('[data-testid="character-card"]')
-      .first()
-      .invoke("attr", "data-character-id")
-      .then((initialId) => {
-        cy.get('[data-testid="character-list-container"]')
-          .children()
-          .first()
-          .scrollTo("bottom");
-        cy.wait(1500);
-        cy.get('[data-testid="character-card"]')
-          .first()
-          .invoke("attr", "data-character-id")
-          .should((newId) => {
-            expect(newId).not.to.eq(initialId);
-          });
-      });
-    ```
+  - 📂 See: [`cypress/e2e/characterList.cy.ts`](../cypress/e2e/characterList.cy.ts)
 
-* Additional integration tests will verify:
-  - Detail page navigation
-  - User journeys and edge cases
+* **All other Integration Test**
+  - 📂 See: [`cypress/e2e/`](../cypress/e2e/)
 
 ### ❌ Dropped: MSW
 
@@ -128,6 +111,11 @@ Instead, RTK Query hooks are mocked directly.
 * React Router DOM manages page navigation
 * Pages live under `/pages`
 * Routes defined in `/routes`
+* Routing behavior:
+  - `/` → Redirects to `/characters`
+  - `/characters` → Character listing page
+  - `/character/:id` → Character detail page (navigated via character card click)
+* Navigation tested via Cypress (integration) and MemoryRouter (unit)
 
 ---
 
@@ -136,14 +124,13 @@ Instead, RTK Query hooks are mocked directly.
 Custom Tailwind palette (tailwind.config.js):
 
 ```js
-colors: {
-  'theme-primary': '#D90429',     // Sith Red
-  'theme-secondary': '#1A1A1D',   // Dark Charcoal
-  'theme-background': '#0B0C10',  // Near Black
-  'theme-text': '#C5C6C7',        // Cold Grey
-}
+  colors: {
+    'theme-primary': '#D90429',     // Sith Red
+    'theme-secondary': '#1A1A1D',   // Dark Charcoal
+    'theme-background': '#0B0C10',  // Near Black
+    'theme-text': '#C5C6C7',        // Cold Grey
+  }
 ```
-
 ---
 
 ## ✅ Coding Guidelines
@@ -170,12 +157,17 @@ colors: {
 ---
 
 ## 🧠 Developer Tips
-
 * IntersectionObserver needs real DOM scroll context — virtualized lists might require mocking container scroll.
 * Jest must mock all data synchronously; async updates need `await waitFor()`.
 * Don’t forget: `coverage/` and test-generated data folders are gitignored.
+* Cypress scrolls might require { ensureScrollable: false } with react-window.
 
 ---
+## 👨‍💻 Author
 
-> ✍️ Document updated on: 2025-06-20
-> 👨‍💻 Maintainer: [Pritam Kininge](https://github.com/kininge)
+> ✍️ **Last Updated:** June 21, 2025  
+> 👨‍💻 **Maintainer:** Pritam Kininge
+
+[GitHub](https://github.com/kininge) |
+[LinkedIn](https://linkedin.com/in/pritam-kininge) |
+[Leetcode](https://leetcode.com/u/kininge007/)

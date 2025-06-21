@@ -1,11 +1,12 @@
+import { BrowserRouter } from 'react-router-dom';
+import Routes from './routes';
 import './App.css';
-import { CharacterList } from './features/characters/characterList';
 
 function App() {
   return (
-    <div className="bg-theme-background min-h-screen text-theme-text">
-      <CharacterList />
-    </div>
+    <BrowserRouter>
+      <Routes />
+    </BrowserRouter>
   );
 }
 

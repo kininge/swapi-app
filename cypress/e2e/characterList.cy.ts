@@ -2,7 +2,7 @@
 
 describe('CharacterList Integration', () => {
   beforeEach(() => {
-    cy.visit('/');
+    cy.visit('/home').wait(1000);
   });
 
   // Character cards render check

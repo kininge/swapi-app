@@ -63,29 +63,33 @@ export const CharacterList: React.FC = () => {
       <h1 className="text-3xl mb-4 font-display text-theme-primary">Characters</h1>
 
       {/* start wars characters */}
-      <div data-testid="character-list-container">
-        <List
-          height={window.innerHeight}
-          itemCount={characters.length}
-          itemSize={ITEM_HEIGHT}
-          width="100%"
-        >
-          {renderCharacterCard}
-        </List>
-      </div>
+      {characters.length > 0 && (
+        <div data-testid="character-list-container">
+          <List
+            height={window.innerHeight}
+            itemCount={characters.length}
+            itemSize={ITEM_HEIGHT}
+            width="100%"
+          >
+            {renderCharacterCard}
+          </List>
+        </div>
+      )}
 
       {/* loading */}
-      <div
-        ref={loaderRef}
-        data-testid="loader-bottom"
-        className="h-16 flex justify-center items-center"
-      >
-        {isLoading && <Loader />}
-      </div>
+      {isLoading && (
+        <div
+          ref={loaderRef}
+          data-testid="loader-bottom"
+          className="h-16 flex justify-center items-center"
+        >
+          <Loader />
+        </div>
+      )}
 
       {/* on api fail or no data */}
       {isLoading === false && characters.length === 0 && (
-        <p role="error-message" className="text-center text-gray-400">
+        <p role="error-message" className="text-center text-gray-400 mt-12">
           No characters found.
         </p>
       )}

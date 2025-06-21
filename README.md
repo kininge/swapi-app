@@ -14,6 +14,12 @@ Built with **React**, **TypeScript**, **RTK Query**, **TailwindCSS**, and **reac
 
 ---
 
+## 🎥 Demo
+
+![Swapi App Demo](./public/demo.gif)
+
+---
+
 ## ✅ Features
 
 * ♾️ Infinite Scroll with virtualization (`react-window`)
@@ -22,6 +28,8 @@ Built with **React**, **TypeScript**, **RTK Query**, **TailwindCSS**, and **reac
 * 🧪 Unit testing with Jest + React Testing Library
 * 🔍 Integration testing using Cypress
 * 📚 Dev Docs included in `/docs`
+* 🧭 Character detail routing via React Router
+
 
 ---
 
@@ -86,6 +94,8 @@ yarn dev
 - 🧑‍💻 Code Guidelines: [`docs/code-style.md`](./docs/code-style.md) _(planned)_
 - 🧩 Micro Frontend Strategy: [`docs/mfe-strategy.md`](./docs/mfe-strategy.md) _(planned)_
 - ⚙️ CI/CD Pipeline: [`docs/ci-pipeline.md`](./docs/ci-pipeline.md) _(planned)_
+- 🔗 Routing Setup: [`docs/routing.md`](./docs/routing.md) _(planned or optional)_
+
 
 ---
 
@@ -101,9 +111,11 @@ yarn dev
 ## 🧪 Testing Summary
 
 * ✅ Unit tests cover UI rendering, states, and logic using Jest + RTL
-- * 🔍 Integration testing (e.g., scroll, navigation) handled in Cypress
-+ * 🔍 Cypress integration tests verify infinite scroll (CharacterList)
-+ * 🧱 Virtualized list logic tested via DOM item mutation (`data-character-id`)
+* 🔍 Integration testing (e.g., scroll, navigation) handled in Cypress
+* 🔍 Cypress integration tests cover:
++   - Infinite scroll (CharacterList)
++   - Character detail navigation (`/character/:id`) on card click
++   - DOM updates for virtualized lists using `data-character-id`
 * ❌ MSW was considered but skipped due to polyfill issues in Node + JSDOM
 
 ---
