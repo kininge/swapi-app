@@ -11,8 +11,8 @@ const AppRoute = () => (
     <Route element={<Layout />}>
       <Route path="/" element={<Navigate to="/home" replace />} />
       <Route path="/home" element={<CharacterList />} />
-      <Route path="/character/:id" element={<CharacterDetail />} />
-      <Route path="/edit/:id" element={<EditCharacter />} />
+      <Route path="/character/:characterId" element={<CharacterDetail />} />
+      <Route path="/edit/:characterId" element={<EditCharacter />} />
       <Route path="/favorites" element={<FavoriteCharacters />} />
       <Route path="*" element={<PageNotFound />} />
     </Route>

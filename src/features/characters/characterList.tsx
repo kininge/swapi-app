@@ -3,6 +3,7 @@ import { Card } from '../../components/ui/card';
 import { Loader } from '../../components/ui/loader';
 import { useGetCharactersQuery } from '../../services/characterApi';
 import { FixedSizeList as List } from 'react-window';
+import { Link } from 'react-router-dom';
 
 type Character = {
   name: string;
@@ -53,7 +54,9 @@ export const CharacterList: React.FC = () => {
     const character = characters[index];
     return (
       <div id={character.uid} style={style} data-testid="character-card" className="p-2">
-        <Card title={character.name} subtitle={`ID: ${character.uid}`} />
+        <Link to={`/character/${character.uid}`}>
+          <Card title={character.name} subtitle={`ID: ${character.uid}`} />
+        </Link>
       </div>
     );
   };
