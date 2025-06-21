@@ -120,9 +120,22 @@ yarn dev
 
 ---
 
+## ✅ Final Submission
+
+![MVP Progress](https://img.shields.io/badge/MVP%20Progress-80%25-yellowgreen)
+![Tests Passing](https://img.shields.io/badge/Tests-90%25-brightgreen)
+![Docs Complete](https://img.shields.io/badge/Docs-Complete-blue)
+
+- 📄 [MVP Delivery Tracker](./MVP_DELIVERY_TRACKER.md)
+- 📋 [Final Submission Checklist](./SUBMISSION_CHECKLIST.md)
+
+---
+
 ## 👨‍💻 Author
 
 Pritam Kininge
 [GitHub](https://github.com/kininge) |
 [LinkedIn](https://linkedin.com/in/pritam-kininge) |
 [Leetcode](https://leetcode.com/u/kininge007/)
+
+---
