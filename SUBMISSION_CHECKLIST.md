@@ -4,6 +4,10 @@
 
 ---
 
+- [x] Architecture diagram included in docs/architecture for clarity and future scalability.
+
+---
+
 ## 📁 Codebase Quality
 
 - [x] All MVP features implemented and tested

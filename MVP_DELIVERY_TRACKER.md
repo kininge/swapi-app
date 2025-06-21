@@ -5,6 +5,10 @@
 
 ---
 
+- [x] Architecture diagram included in docs/architecture for clarity and future scalability.
+
+---
+
 ## 🔧 Core Features
 
 - [x] Character List with virtualization (`react-window`)

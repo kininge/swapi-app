@@ -5,6 +5,16 @@ It covers architecture, folder structure, conventions, and testing strategy.
 
 ---
 
+## 🧠 Architecture Philosophy
+
+We follow a hybrid data-fetching strategy:
+- Characters are loaded via paginated `/people?expanded=true`
+- Films and Starships are loaded once and cached (via redux-persist)
+- Planets are lazy-loaded and memoized
+- Edits & Favorites persist locally per device
+
+---
+
 ## 📁 Folder Structure
 
 ```
