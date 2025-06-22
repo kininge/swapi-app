@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useAppSelector } from '../../store/hooks';
-import { fetchPlanetById } from '../../services/cacheApi';
-import type { PLANET } from '../../types';
+import { useAppSelector } from '../store/hooks';
+import { fetchPlanetById } from '../services/cacheApi';
+import type { PLANET } from '../types';
 
 type PlanetInfoProps = { planetUrl: string };
 

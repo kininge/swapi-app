@@ -1,10 +1,11 @@
 import React, { useState, useRef, useMemo } from 'react';
 import debounce from 'lodash.debounce';
 import { useSearchCharactersByNameQuery } from '../../services/characterApi';
-import CharacterCard from '../../components/ui/characterCard';
-import { FixedSizeList as List } from 'react-window';
+import CharacterCard from '../../components/characterCard';
+import { FixedSizeList } from 'react-window';
+import AutoSizer from 'react-virtualized-auto-sizer';
 
-const ROW_HEIGHT = 240; // Approximate height of each CharacterCard + margin
+const ROW_HEIGHT = 160; // Approximate height of each CharacterCard + margin
 
 const SearchPage: React.FC = () => {
   const [query, setQuery] = useState('');
@@ -62,9 +63,20 @@ const SearchPage: React.FC = () => {
         <p className="text-yellow-400 mt-6">No characters found for “{searchTerm}”.</p>
       ) : (
         <div className="mt-6">
-          <List height={700} itemCount={characters.length} itemSize={ROW_HEIGHT} width="100%">
-            {Row}
-          </List>
+          {characters.length > 0 && (
+            <AutoSizer>
+              {({ height, width }) => (
+                <FixedSizeList
+                  height={height}
+                  width={width}
+                  itemSize={ROW_HEIGHT}
+                  itemCount={characters.length}
+                >
+                  {Row}
+                </FixedSizeList>
+              )}
+            </AutoSizer>
+          )}
         </div>
       )}
     </div>

@@ -13,6 +13,7 @@ import {
 import storage from 'redux-persist/lib/storage'; // uses localStorage
 
 import cacheReducer from './slices/cacheSlice';
+import favoriteReducer from './slices/favoriteSlice';
 import { characterAPI } from '../services/characterApi';
 
 // persist config for cache
@@ -20,10 +21,15 @@ const cachePersistConfig = {
   key: 'cache',
   storage,
 };
+const favoritesPersistConfig = {
+  key: 'favorites',
+  storage,
+};
 
 const rootReducer = combineReducers({
   [characterAPI.reducerPath]: characterAPI.reducer,
   cache: persistReducer(cachePersistConfig, cacheReducer),
+  favorite: persistReducer(favoritesPersistConfig, favoriteReducer),
 });
 
 export const store = configureStore({

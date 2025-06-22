@@ -2,8 +2,9 @@ import React from 'react';
 import { useParams, useLocation } from 'react-router-dom';
 import { useGetCharacterByIdQuery } from '../../services/characterApi';
 import type { CHARACTER } from '../../types';
-import FilmList from '../../components/ui/filmList';
-import StarshipList from '../../components/ui/startshipList';
+import FilmList from '../../components/filmList';
+import StarshipList from '../../components/starshipList';
+import FavoriteToggle from '../../components/favoriteToggle';
 
 const CharacterDetailPage: React.FC = () => {
   const { id } = useParams();
@@ -28,7 +29,10 @@ const CharacterDetailPage: React.FC = () => {
 
   return (
     <div className="p-6 max-w-3xl mx-auto text-white">
-      <h1 className="text-4xl font-bold mb-4">{name}</h1>
+      <div className="flex items-center justify-between mb-2">
+        <h1 className="text-2xl font-bold">{name}</h1>
+        <FavoriteToggle character={character} size="lg" />
+      </div>
       <div className="grid grid-cols-2 gap-4 mb-6">
         <div>
           <strong>Hair color:</strong> {hair_color || 'Unknown'}

@@ -1,12 +1,13 @@
 // src/pages/CharacterListPage.tsx
 import React, { useEffect, useRef, useState } from 'react';
 import { useGetCharactersListQuery } from '../../services/characterApi';
-import { Loader } from '../../components/ui/loader';
-import CharacterCard from '../../components/ui/characterCard';
-import { FixedSizeList as List } from 'react-window';
+import { Loader } from '../../components/loader';
+import CharacterCard from '../../components/characterCard';
+import { FixedSizeList } from 'react-window';
 import type { CHARACTER } from '../../types';
+import AutoSizer from 'react-virtualized-auto-sizer';
 
-const ITEM_HEIGHT = 180;
+const ITEM_HEIGHT = 160;
 
 const CharacterListPage: React.FC = () => {
   const [page, setPage] = useState(1);
@@ -55,14 +56,18 @@ const CharacterListPage: React.FC = () => {
       <h1 className="text-3xl font-display mb-4 text-theme-primary">Characters</h1>
 
       {characters.length > 0 && (
-        <List
-          height={typeof window !== 'undefined' ? window.innerHeight - 100 : 600}
-          itemCount={characters.length}
-          itemSize={ITEM_HEIGHT}
-          width="100%"
-        >
-          {renderRow}
-        </List>
+        <AutoSizer>
+          {({ height, width }) => (
+            <FixedSizeList
+              height={height}
+              width={width}
+              itemSize={ITEM_HEIGHT}
+              itemCount={characters.length}
+            >
+              {renderRow}
+            </FixedSizeList>
+          )}
+        </AutoSizer>
       )}
 
       {/* Loader for infinite scroll */}
