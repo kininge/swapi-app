@@ -5,7 +5,7 @@ import * as characterApi from '../../../services/characterApi';
 
 jest.mock('../../../services/characterApi');
 
-const mockedUseGetCharactersQuery = characterApi.useGetCharactersQuery as jest.Mock;
+const mockedUseGetCharactersQuery = characterApi.useGetCharactersListQuery as jest.Mock;
 
 describe('CharacterList', () => {
   beforeEach(() => {

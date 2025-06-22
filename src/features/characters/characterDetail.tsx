@@ -1,6 +1,5 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import { useGetCharacterByIdQuery } from '../../services/characterApi';
 import { Loader } from '../../components/ui/loader';
 import { Error } from '../../components/ui/error';
 

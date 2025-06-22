@@ -1,21 +1,20 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Card } from '../../components/ui/card';
 import { Loader } from '../../components/ui/loader';
-import { useGetCharactersQuery } from '../../services/characterApi';
+import { useGetCharactersListQuery } from '../../services/characterApi';
 import { FixedSizeList as List } from 'react-window';
 import { Link } from 'react-router-dom';
-
-type Character = {
-  name: string;
-  uid: string;
-};
+import type { CHARACTER } from '../../types';
 
 const ITEM_HEIGHT = 160;
 
 export const CharacterList: React.FC = () => {
   const [page, setPage] = useState(1);
-  const [characters, setCharacters] = useState<Character[]>([]);
-  const { data, isLoading } = useGetCharactersQuery({ page }) || { data: null, isLoading: false };
+  const [characters, setCharacters] = useState<CHARACTER[]>([]);
+  const { data, isLoading } = useGetCharactersListQuery({ page }) || {
+    data: null,
+    isLoading: false,
+  };
   const [hasMore, setHasMore] = useState(true);
   const loaderRef = useRef<HTMLDivElement | null>(null);
 
@@ -39,13 +38,14 @@ export const CharacterList: React.FC = () => {
       }
     });
     // track user scroll
-    if (loaderRef.current) {
-      observer.observe(loaderRef.current);
+    const currentLoader = loaderRef.current;
+    if (currentLoader) {
+      observer.observe(currentLoader);
     }
 
     // clear data on unmount
     return () => {
-      if (loaderRef.current) observer.unobserve(loaderRef.current);
+      if (currentLoader) observer.unobserve(currentLoader);
     };
   }, [isLoading, data, characters.length, hasMore]);
 
@@ -55,7 +55,7 @@ export const CharacterList: React.FC = () => {
     return (
       <div id={character.uid} style={style} data-testid="character-card" className="p-2">
         <Link to={`/character/${character.uid}`}>
-          <Card title={character.name} subtitle={`ID: ${character.uid}`} />
+          <Card title={character.properties.name} subtitle={`ID: ${character.uid}`} />
         </Link>
       </div>
     );
