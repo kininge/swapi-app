@@ -5,12 +5,14 @@ import FavoriteCharacters from '../pages/favoritesPage';
 import EditCharacter from '../pages/editCharacterPage';
 import Layout from '../layouts/layout';
 import PageNotFound from '../pages/pageNotFound';
+import SearchPage from '../pages/searchPage';
 
 const AppRoute = () => (
   <Routes>
     <Route element={<Layout />}>
       <Route path="/" element={<Navigate to="/home" replace />} />
       <Route path="/home" element={<CharacterList />} />
+      <Route path="/search" element={<SearchPage />} />
       <Route path="/character/:characterId" element={<CharacterDetail />} />
       <Route path="/edit/:characterId" element={<EditCharacter />} />
       <Route path="/favorites" element={<FavoriteCharacters />} />

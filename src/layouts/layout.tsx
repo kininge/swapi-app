@@ -25,6 +25,15 @@ const Layout = () => {
             Home
           </Link>
 
+          {/* search nav bar tab */}
+          <Link
+            data-testid="search-route-link"
+            to="/search"
+            className="text-white hover:text-yellow-400"
+          >
+            Search
+          </Link>
+
           {/* favorites nav bar tab */}
           <Link
             data-testid="favorites-route-link"
