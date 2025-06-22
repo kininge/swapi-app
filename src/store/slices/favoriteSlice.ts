@@ -10,7 +10,7 @@ const initialState: FavoritesState = {
 };
 
 const favoritesSlice = createSlice({
-  name: 'favorites',
+  name: 'favorite',
   initialState,
   reducers: {
     toggleFavorite(state, action: PayloadAction<CHARACTER>) {
