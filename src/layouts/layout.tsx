@@ -29,7 +29,7 @@ const Layout = () => {
           <Link
             data-testid="search-route-link"
             to="/search"
-            className="text-white hover:text-yellow-400"
+            className="hover:underline text-theme-primary"
           >
             Search
           </Link>

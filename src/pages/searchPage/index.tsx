@@ -1,7 +1,10 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useMemo } from 'react';
 import debounce from 'lodash.debounce';
 import { useSearchCharactersByNameQuery } from '../../services/characterApi';
 import CharacterCard from '../../components/ui/characterCard';
+import { FixedSizeList as List } from 'react-window';
+
+const ROW_HEIGHT = 240; // Approximate height of each CharacterCard + margin
 
 const SearchPage: React.FC = () => {
   const [query, setQuery] = useState('');
@@ -19,11 +22,25 @@ const SearchPage: React.FC = () => {
     debouncedSearch(value);
   };
 
-  const { data, isLoading, isError, isFetching } = useSearchCharactersByNameQuery(searchTerm, {
+  const { data, isLoading, isFetching, isError } = useSearchCharactersByNameQuery(searchTerm, {
     skip: !searchTerm,
   });
 
-  const characters = data?.results || data?.result || [];
+  const characters = useMemo(() => {
+    if (!searchTerm) return [];
+    return data?.results || data?.result || [];
+  }, [searchTerm, data]);
+
+  const Row = useMemo(() => {
+    return ({ index, style }: { index: number; style: React.CSSProperties }) => {
+      const character = characters[index];
+      return (
+        <div style={style}>
+          <CharacterCard key={character.uid} character={character} />
+        </div>
+      );
+    };
+  }, [characters]);
 
   return (
     <div className="p-4 max-w-4xl mx-auto">
@@ -44,10 +61,10 @@ const SearchPage: React.FC = () => {
       ) : searchTerm && characters.length === 0 ? (
         <p className="text-yellow-400 mt-6">No characters found for “{searchTerm}”.</p>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-6">
-          {characters.map((character) => (
-            <CharacterCard key={character.uid} character={character} />
-          ))}
+        <div className="mt-6">
+          <List height={700} itemCount={characters.length} itemSize={ROW_HEIGHT} width="100%">
+            {Row}
+          </List>
         </div>
       )}
     </div>
