@@ -1,3 +1,4 @@
+// src/hooks/useCacheBoot.tsx
 import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -8,12 +9,12 @@ import {
 } from '../store/slices/cacheSlice';
 import { fetchFilms, fetchStarships } from '../services/cacheApi';
 import type { RootState } from '../store/store';
+import type { FILM, STARSHIP } from '../types';
 
 export const useCacheBoot = () => {
   const dispatch = useDispatch();
   const { filmsById, starshipById } = useSelector((state: RootState) => state.cache);
-
-  const hasBooted = useRef(false); // ✅ Prevents duplicate boot
+  const hasBooted = useRef(false);
 
   useEffect(() => {
     if (hasBooted.current) return;
@@ -21,47 +22,55 @@ export const useCacheBoot = () => {
 
     const preload = async () => {
       try {
-        console.log('filmsById', Object.keys(filmsById).length);
-        // 🔁 FILMS
+        // 🎬 FILMS
         if (Object.keys(filmsById).length === 0) {
           const films = await fetchFilms();
-          console.log('films', films);
-          const filmMap: Record<string, (typeof films)[0]> = {};
+          const filmMap: Record<string, FILM> = {};
           const characterToFilms: Record<string, string[]> = {};
 
           for (const film of films) {
-            filmMap[film.uid] = film;
-            for (const charUrl of film.properties.characters || []) {
-              const id = charUrl.split('/').pop()!;
+            const { uid, properties } = film;
+            filmMap[uid] = film;
+
+            for (const charUrl of properties.characters ?? []) {
+              const id = charUrl.split('/').pop();
+              if (!id) continue;
+
               if (!characterToFilms[id]) characterToFilms[id] = [];
-              characterToFilms[id].push(film.uid);
+              characterToFilms[id].push(uid);
             }
           }
 
           dispatch(setFilms(filmMap));
           dispatch(setCharacterToFilms(characterToFilms));
+          console.log(`✅ Preloaded ${films.length} films and characterToFilms map`);
         }
-        console.log('starshipById', Object.keys(starshipById).length);
+
         // 🚀 STARSHIPS
         if (Object.keys(starshipById).length === 0) {
           const starships = await fetchStarships();
-          const starshipMap: Record<string, (typeof starships)[0]> = {};
+          const starshipMap: Record<string, STARSHIP> = {};
           const characterToStarship: Record<string, string[]> = {};
 
           for (const ship of starships) {
-            starshipMap[ship.uid] = ship;
-            for (const pilotUrl of ship.properties.pilots || []) {
-              const id = pilotUrl.split('/').pop()!;
+            const { uid, properties } = ship;
+            starshipMap[uid] = ship;
+
+            for (const pilotUrl of properties.pilots ?? []) {
+              const id = pilotUrl.split('/').pop();
+              if (!id) continue;
+
               if (!characterToStarship[id]) characterToStarship[id] = [];
-              characterToStarship[id].push(ship.uid);
+              characterToStarship[id].push(uid);
             }
           }
 
           dispatch(setStarship(starshipMap));
           dispatch(setCharacterToStarship(characterToStarship));
+          console.log(`✅ Preloaded ${starships.length} starships and characterToStarship map`);
         }
       } catch (err) {
-        console.error('⚠️ Cache boot error:', err);
+        console.error('⚠️ Cache boot failed:', err);
       }
     };
 

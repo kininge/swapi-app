@@ -12,7 +12,14 @@ export const characterAPI = createApi({
     searchCharactersByName: builder.query<LIST_RESPONSE<CHARACTER>, string>({
       query: (name) => ENDPOINTS.CHARACTER.SEARCH(name),
     }),
+    getCharacterById: builder.query<CHARACTER, string>({
+      query: (id) => ENDPOINTS.CHARACTER.DETAIL(id),
+    }),
   }),
 });
 
-export const { useGetCharactersListQuery, useSearchCharactersByNameQuery } = characterAPI;
+export const {
+  useGetCharactersListQuery,
+  useSearchCharactersByNameQuery,
+  useGetCharacterByIdQuery,
+} = characterAPI;

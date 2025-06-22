@@ -19,8 +19,10 @@ const CharacterListPage: React.FC = () => {
   useEffect(() => {
     if (data) {
       const newCharacters: CHARACTER[] = data?.results || data?.result || [];
-      setCharacters((prev) => {
-        return [...prev, ...newCharacters];
+      setCharacters((currentState: CHARACTER[]) => {
+        const seen = new Set(currentState.map((c) => c.uid));
+        const uniqueNewCharacters = newCharacters.filter((c) => !seen.has(c.uid));
+        return [...currentState, ...uniqueNewCharacters];
       });
     }
   }, [data]);
