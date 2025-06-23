@@ -2,7 +2,6 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import CharacterList from '../pages/characterListPage';
 import CharacterDetail from '../pages/characterDetailPage';
 import FavoriteCharacters from '../pages/favoritesPage';
-import EditCharacter from '../pages/editCharacterPage';
 import Layout from '../layouts/layout';
 import PageNotFound from '../pages/pageNotFound';
 import SearchPage from '../pages/searchPage';
@@ -14,7 +13,6 @@ const AppRoute = () => (
       <Route path="/home" element={<CharacterList />} />
       <Route path="/search" element={<SearchPage />} />
       <Route path="/character/:characterId" element={<CharacterDetail />} />
-      <Route path="/edit/:characterId" element={<EditCharacter />} />
       <Route path="/favorites" element={<FavoriteCharacters />} />
       <Route path="*" element={<PageNotFound />} />
     </Route>

@@ -349,11 +349,9 @@ This project is licensed under the [MIT License](./LICENSE).
 
 ---
 
-## 👨‍💻 Author
+## 👨‍💻 Author & Maintainer
 
 **Pritam Kininge** — Frontend Developer | React, TypeScript, TDD  
 📍 Navi Mumbai, India (UTC+5:30)  
 🗓️ Submitted: June 22, 2025  
 [LinkedIn](https://linkedin.com/in/pritam-kininge)  |  [GitHub](https://github.com/kininge)  |  [Leetcode](https://leetcode.com/u/kininge007/)
-
-__
