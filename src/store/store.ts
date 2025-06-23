@@ -12,10 +12,12 @@ import {
 } from 'redux-persist';
 import storage from 'redux-persist/lib/storage'; // uses localStorage
 
-import cacheReducer from './slices/cacheSlice';
-import favoriteReducer from './slices/favoriteSlice';
-import editedCharacterReducer from './slices/editedCharacterSlice';
-import { characterAPI } from '../services/characterApi';
+import characterReducer from '../features/characters/characterSlice';
+import searchedCharacterReducer from '../features/characters/searchSlice';
+import cacheReducer from '../features/cache/cacheSlice';
+import favoriteReducer from '../features/characters/favoriteSlice';
+import editedCharacterReducer from '../features/characters/editedCharacterSlice';
+import { characterAPI } from '../features/characters/characterApi';
 
 // persist config for cache
 const cachePersistConfig = {
@@ -33,6 +35,8 @@ const editedCharacterPersistConfig = {
 
 const rootReducer = combineReducers({
   [characterAPI.reducerPath]: characterAPI.reducer,
+  characters: characterReducer,
+  searchedCharacters: searchedCharacterReducer,
   cache: persistReducer(cachePersistConfig, cacheReducer),
   favorite: persistReducer(favoritesPersistConfig, favoriteReducer),
   editedCharacter: persistReducer(editedCharacterPersistConfig, editedCharacterReducer),
@@ -45,7 +49,7 @@ export const store = configureStore({
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
-    }).concat(characterAPI.middleware),
+    }).concat(characterAPI.middleware), // added character api as middleware
 });
 
 export const persistor = persistStore(store);

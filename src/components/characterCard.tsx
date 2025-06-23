@@ -4,7 +4,7 @@ import type { CHARACTER } from '../types';
 import { Link } from 'react-router-dom';
 import PlanetInfo from './planetInfo';
 import FavoriteToggle from './favoriteToggle'; // 📦 Reusable favorite toggle
-import type { EditedFields } from '../store/slices/editedCharacterSlice';
+import type { EditedFields } from '../features/characters/editedCharacterSlice';
 import { useAppSelector } from '../store/hooks';
 
 const CharacterCard: React.FC<{ character: CHARACTER }> = ({ character }) => {

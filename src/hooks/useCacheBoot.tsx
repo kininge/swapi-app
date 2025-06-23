@@ -6,8 +6,8 @@ import {
   setCharacterToStarship,
   setFilms,
   setStarship,
-} from '../store/slices/cacheSlice';
-import { fetchFilms, fetchStarships } from '../services/cacheApi';
+} from '../features/cache/cacheSlice';
+import { fetchFilms, fetchStarships } from '../features/planets/planetAPI';
 import type { RootState } from '../store/store';
 import type { FILM, STARSHIP } from '../types';
 

@@ -15,18 +15,18 @@ export const editedCharacterSlice = createSlice({
   name: 'editedCharacter',
   initialState,
   reducers: {
-    setCharacterEdits: (state, action: PayloadAction<{ uid: string; changes: EditedFields }>) => {
+    setUpdatedCharacter: (state, action: PayloadAction<{ uid: string; changes: EditedFields }>) => {
       const { uid, changes } = action.payload;
       state.editedCharactersById[uid] = {
         ...state.editedCharactersById[uid],
         ...changes,
       };
     },
-    resetCharacterEdits: (state, action: PayloadAction<string>) => {
+    resetCharacterUpdates: (state, action: PayloadAction<string>) => {
       delete state.editedCharactersById[action.payload];
     },
   },
 });
 
-export const { setCharacterEdits, resetCharacterEdits } = editedCharacterSlice.actions;
+export const { setUpdatedCharacter, resetCharacterUpdates } = editedCharacterSlice.actions;
 export default editedCharacterSlice.reducer;

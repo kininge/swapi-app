@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAppSelector } from '../store/hooks';
-import { fetchPlanetById } from '../services/cacheApi';
+import { fetchPlanetById } from '../features/planets/planetAPI';
 import type { PLANET } from '../types';
 
 type PlanetInfoProps = { planetUrl: string };

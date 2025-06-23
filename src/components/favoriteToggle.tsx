@@ -1,6 +1,6 @@
 import React from 'react';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
-import { toggleFavorite } from '../store/slices/favoriteSlice';
+import { toggleFavorite } from '../features/characters/favoriteSlice';
 import clsx from 'clsx';
 import type { CHARACTER } from '../types';
 

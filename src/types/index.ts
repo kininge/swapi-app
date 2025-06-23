@@ -40,6 +40,21 @@ export interface CHARACTER {
   };
 }
 
+export interface CHARACTER_SLICE_STATE {
+  list: CHARACTER[];
+  status: 'idle' | 'loading' | 'succeeded' | 'failed';
+  error: string | null;
+  totalPages: number | null;
+  totalRecords: number | null;
+  next: string | null;
+}
+
+export interface SEARCH_SLICE_STATE {
+  list: CHARACTER[];
+  status: 'idle' | 'loading' | 'succeeded' | 'failed';
+  error: string | null;
+}
+
 export interface FILM {
   uid: string;
   description: string;

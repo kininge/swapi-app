@@ -1,48 +1,61 @@
-// src/pages/CharacterListPage.tsx
 import React, { useEffect, useRef, useState } from 'react';
-import { useGetCharactersListQuery } from '../../services/characterApi';
 import { Loader } from '../../components/loader';
 import CharacterCard from '../../components/characterCard';
 import { FixedSizeList } from 'react-window';
-import type { CHARACTER } from '../../types';
 import AutoSizer from 'react-virtualized-auto-sizer';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import {
+  fetchCharacters,
+  resetCharacters,
+  selectCharacters,
+  selectCharacterStatus,
+  selectNext,
+} from '../../features/characters/characterSlice';
+import debounce from 'lodash.debounce';
 
 const ITEM_HEIGHT = 160;
 
 const CharacterListPage: React.FC = () => {
+  const dispatch = useAppDispatch();
+  const characters = useAppSelector(selectCharacters);
+  const status = useAppSelector(selectCharacterStatus);
+  const next = useAppSelector(selectNext);
+  const isIdle = status === 'idle';
+  const isLoading = status === 'loading';
   const [page, setPage] = useState(1);
-  const [characters, setCharacters] = useState<CHARACTER[]>([]);
+
+  const debouncedFetch = useRef(
+    debounce((_page: number) => {
+      dispatch(fetchCharacters(_page));
+    }, 100)
+  ).current;
   const loaderRef = useRef<HTMLDivElement | null>(null);
 
-  const { data, isLoading, isFetching } = useGetCharactersListQuery({ page });
-
-  // Append paginated characters (no duplicates)
   useEffect(() => {
-    if (data) {
-      const newCharacters: CHARACTER[] = data?.results || data?.result || [];
-      setCharacters((currentState: CHARACTER[]) => {
-        const seen = new Set(currentState.map((c) => c.uid));
-        const uniqueNewCharacters = newCharacters.filter((c) => !seen.has(c.uid));
-        return [...currentState, ...uniqueNewCharacters];
-      });
+    if (status !== 'idle' && next) {
+      debouncedFetch(page);
     }
-  }, [data]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page]);
 
-  // Infinite scroll using IntersectionObserver
   useEffect(() => {
-    const observer = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting && !isFetching && data?.next) {
-        setPage((prev) => prev + 1);
-      }
-    });
-
-    const current = loaderRef.current;
-    if (current) observer.observe(current);
+    // initial call
+    if (status === 'idle' && next === null) {
+      console.log('initial call', status, next, page);
+      debouncedFetch(page);
+    }
 
     return () => {
-      if (current) observer.unobserve(current);
+      dispatch(resetCharacters());
+      debouncedFetch.cancel();
     };
-  }, [data, isFetching]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const handleLoadMore = () => {
+    setPage((previousPage) => previousPage + 1);
+  };
 
   // Renderer for each row
   const renderRow = ({ index, style }: { index: number; style: React.CSSProperties }) => (
@@ -72,10 +85,10 @@ const CharacterListPage: React.FC = () => {
 
       {/* Loader for infinite scroll */}
       <div ref={loaderRef} className="h-20 flex justify-center items-center">
-        {(isLoading || isFetching) && <Loader />}
+        {isLoading && <Loader />}
       </div>
 
-      {!isLoading && characters.length === 0 && (
+      {!isLoading && !isIdle && characters.length === 0 && (
         <div className="text-center text-gray-400 mt-12">No characters found.</div>
       )}
     </div>

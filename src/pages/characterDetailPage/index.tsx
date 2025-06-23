@@ -1,41 +1,52 @@
-import React, { useState } from 'react';
-import { useParams, useLocation } from 'react-router-dom';
-import { useGetCharacterByIdQuery } from '../../services/characterApi';
+import { useLocation, useParams } from 'react-router-dom';
 import type { CHARACTER } from '../../types';
+import { useGetCharacterByIdQuery } from '../../features/characters/characterApi';
+import {
+  setUpdatedCharacter,
+  type EditedFields,
+} from '../../features/characters/editedCharacterSlice';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { useState } from 'react';
 import FilmList from '../../components/filmList';
 import StarshipList from '../../components/starshipList';
-import FavoriteToggle from '../../components/favoriteToggle';
-import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { setCharacterEdits, type EditedFields } from '../../store/slices/editedCharacterSlice';
+import CharacterHeader from './characterHeader';
+import CharacterDataDisplay from './characterDataDisplay';
+import FormActions from '../../components/formAction';
 
 const CharacterDetailPage: React.FC = () => {
-  const [edit, setEdit] = useState<boolean>(false);
-  const { id } = useParams();
-  const location = useLocation();
   const dispatch = useAppDispatch();
-  const characterFromState = (location.state as { character?: CHARACTER })?.character;
+  const { id } = useParams(); // get character id in URL
+  const location = useLocation();
+  // CHARTER as prop
+  const characterFromState: CHARACTER | undefined = (location.state as { character?: CHARACTER })
+    ?.character;
 
-  const shouldFetch = !characterFromState;
+  // if get in props get use -- or -- call characterById
+  const fetchById: boolean = characterFromState === undefined;
   const {
     data: fetchedCharacter,
     isLoading,
     isError,
   } = useGetCharacterByIdQuery(id!, {
-    skip: !shouldFetch,
+    skip: !fetchById,
   });
+
   const character = characterFromState || fetchedCharacter;
 
+  // get edited records
   const edited: EditedFields = useAppSelector((state) => {
-    // If character is not available yet, return undefined
+    //   // If character is not available yet, return undefined
     if (!character) return {};
     return state.editedCharacter.editedCharactersById[character!.uid];
   });
 
+  // get edited character
   const latestCharacter: EditedFields = {
     ...character?.properties,
     ...edited,
   };
 
+  const [edit, setEdit] = useState<boolean>(false);
   const [editedCharacter, setEditedCharacter] = useState({
     gender: latestCharacter.gender || '',
     height: latestCharacter.height || '',
@@ -44,10 +55,9 @@ const CharacterDetailPage: React.FC = () => {
     eye_color: latestCharacter.eye_color || '',
   });
 
+  // return failed conditions
   if (isLoading) return <p className="text-white p-4">Loading character...</p>;
-  if (isError || !character) return <p className="text-red-400 p-4">Character not found.</p>;
-
-  const { birth_year, eye_color, gender, hair_color, height, mass, name } = latestCharacter;
+  if (isError || !latestCharacter) return <p className="text-red-400 p-4">Character not found.</p>;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -55,54 +65,29 @@ const CharacterDetailPage: React.FC = () => {
   };
 
   const handleSave = () => {
-    dispatch(setCharacterEdits({ uid: character.uid, changes: editedCharacter }));
+    dispatch(setUpdatedCharacter({ uid: character!.uid, changes: editedCharacter }));
+    setEdit(false);
+  };
+
+  const onCancel = () => {
+    setEditedCharacter({
+      gender: latestCharacter.gender || '',
+      height: latestCharacter.height || '',
+      mass: latestCharacter.mass || '',
+      hair_color: latestCharacter.hair_color || '',
+      eye_color: latestCharacter.eye_color || '',
+    }); // reset edits
     setEdit(false);
   };
 
   return (
     <div className="p-6 max-w-3xl mx-auto text-white">
-      {/* header */}
-      <div className="flex items-center justify-between mb-2">
-        <h1 className="text-2xl font-bold">{name}</h1>
-
-        {edit === false && (
-          <div>
-            {/* edit */}
-            <button
-              onClick={() => setEdit(true)}
-              className="mt-4 px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700"
-            >
-              Edit
-            </button>
-
-            <FavoriteToggle character={character} size="lg" />
-          </div>
-        )}
-      </div>
+      <CharacterHeader character={character!} isUpdating={edit} setUpdate={setEdit} />
       {edit == false && (
-        <div className="grid grid-cols-2 gap-4 mb-6">
-          <div>
-            <strong>Hair color:</strong> {hair_color || 'Unknown'}
-          </div>
-          <div>
-            <strong>Eye color:</strong> {eye_color || 'Unknown'}
-          </div>
-          <div>
-            <strong>Gender:</strong> {gender || 'Unknown'}
-          </div>
-          <div>
-            <strong>Birth Year:</strong> {birth_year || 'Unknown'}
-          </div>
-          <div>
-            <strong>Height:</strong> {height ? `${height} cm` : 'Unknown'}
-          </div>
-          <div>
-            <strong>Mass:</strong> {mass ? `${mass} kg` : 'Unknown'}
-          </div>
-          {/* <div>
-          <strong>Homeworld:</strong> {planetName}
-        </div> */}
-        </div>
+        <CharacterDataDisplay
+          editableData={latestCharacter}
+          homeworldUrl={character!.properties.homeworld}
+        />
       )}
       {/* editing section */}
       {edit && (
@@ -122,35 +107,15 @@ const CharacterDetailPage: React.FC = () => {
             </div>
           ))}
 
-          <button
-            onClick={handleSave}
-            className="mt-4 px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700"
-          >
-            Save Changes
-          </button>
-          <button
-            onClick={() => {
-              setEditedCharacter({
-                gender: latestCharacter.gender || '',
-                height: latestCharacter.height || '',
-                mass: latestCharacter.mass || '',
-                hair_color: latestCharacter.hair_color || '',
-                eye_color: latestCharacter.eye_color || '',
-              }); // reset edits
-              setEdit(false);
-            }}
-            className="px-4 py-2 rounded bg-gray-300 text-gray-800 hover:bg-gray-400"
-          >
-            Cancel
-          </button>
+          <FormActions onSave={handleSave} onCancel={onCancel} />
         </div>
       )}
       {/* films */}
-      <FilmList characterId={character.uid} />
+      <FilmList characterId={character!.uid} />
       <br />
       <br />
       {/* starships */}
-      <StarshipList characterId={character.uid} />
+      <StarshipList characterId={character!.uid} />
     </div>
   );
 };
