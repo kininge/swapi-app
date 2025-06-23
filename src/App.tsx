@@ -4,7 +4,7 @@ import './App.css';
 import { useCacheBoot } from './hooks/useCacheBoot';
 
 function App() {
-  useCacheBoot();
+  // useCacheBoot();
 
   return (
     <BrowserRouter>
