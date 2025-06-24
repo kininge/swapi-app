@@ -52,9 +52,11 @@ const CharacterListPage: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const handleLoadMore = () => {
-    setPage((previousPage) => previousPage + 1);
+  const handleLoadMore = ({ visibleStopIndex }: { visibleStopIndex: number }) => {
+    if (visibleStopIndex === characters.length - 5) {
+      console.log('------> visibleStopIndex: ', visibleStopIndex);
+      setPage((previousPage) => previousPage + 1);
+    }
   };
 
   const renderRow = React.memo(
@@ -79,6 +81,7 @@ const CharacterListPage: React.FC = () => {
               width={width}
               itemSize={ITEM_HEIGHT}
               itemCount={characters.length}
+              onItemsRendered={handleLoadMore}
             >
               {renderRow}
             </FixedSizeList>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Card } from './card';
 import type { CHARACTER } from '../types';
 import { Link } from 'react-router-dom';
@@ -20,6 +20,14 @@ const CharacterCard: React.FC<{ character: CHARACTER }> = ({ character }) => {
 
   const { gender, name } = latestCharacter;
 
+  const favoriteToggleButton = useMemo(() => {
+    return <FavoriteToggle character={character} size="lg" />;
+  }, [character]);
+
+  const renderPlanetCard = useMemo(() => {
+    return <PlanetInfo planetUrl={character.properties.homeworld} />;
+  }, [character.properties.homeworld]);
+
   return (
     <div className="relative p-2 group">
       <Link to={`/character/${character.uid}`} state={{ character }}>
@@ -30,13 +38,10 @@ const CharacterCard: React.FC<{ character: CHARACTER }> = ({ character }) => {
 
               <div className="flex">
                 <div className="text-2xl">{gender}</div>
-                <div className="ml-5">
-                  <FavoriteToggle character={character} size="lg" />
-                </div>
+                <div className="ml-5">{favoriteToggleButton}</div>
               </div>
             </div>
-
-            <PlanetInfo planetUrl={character.properties.homeworld} />
+            {renderPlanetCard}
           </>
         </Card>
       </Link>

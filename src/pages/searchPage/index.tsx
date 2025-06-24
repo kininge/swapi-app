@@ -35,10 +35,8 @@ const SearchPage: React.FC = () => {
   };
 
   const Row = useMemo(() => {
-    console.log('------> ', characters);
     return ({ index, style }: { index: number; style: React.CSSProperties }) => {
       const character = characters[index];
-      console.log('------> ', index, character);
       return (
         <div style={style}>
           <CharacterCard key={character.uid} character={character} />
