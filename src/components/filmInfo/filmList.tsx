@@ -33,4 +33,4 @@ const FilmList: React.FC<FilmListProps> = ({ characterId }) => {
   );
 };
 
-export default FilmList;
+export default React.memo(FilmList);

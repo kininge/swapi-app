@@ -18,4 +18,4 @@ const StarshipCard: React.FC<StarshipCardProps> = ({ starship }) => {
   );
 };
 
-export default StarshipCard;
+export default React.memo(StarshipCard);

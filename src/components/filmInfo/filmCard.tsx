@@ -42,4 +42,4 @@ const FilmCard: React.FC<FilmCardProps> = ({ film }) => {
   );
 };
 
-export default FilmCard;
+export default React.memo(FilmCard);

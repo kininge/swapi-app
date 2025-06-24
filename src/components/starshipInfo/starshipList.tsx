@@ -30,4 +30,4 @@ const StarshipList: React.FC<StarshipListProps> = ({ characterId }) => {
   );
 };
 
-export default StarshipList;
+export default React.memo(StarshipList);
