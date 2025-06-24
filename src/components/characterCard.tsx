@@ -3,17 +3,17 @@ import { Card } from './card';
 import type { CHARACTER } from '../types';
 import { Link } from 'react-router-dom';
 import PlanetInfo from './planetInfo';
-import type { EditedFields } from '../features/characters/editedCharacterSlice';
+import type { UpdatedFields } from '../features/characters/updatedCharacterSlice';
 import { useAppSelector } from '../store/hooks';
 import GenderInfo from './genderInfo';
 
 const CharacterCard: React.FC<{ character: CHARACTER }> = ({ character }) => {
-  const edited: EditedFields = useAppSelector((state) => {
+  const edited: UpdatedFields = useAppSelector((state) => {
     // If character is not available yet, return undefined
     if (!character) return {};
     return state.editedCharacter.editedCharactersById[character!.uid];
   });
-  const latestCharacter: EditedFields = {
+  const latestCharacter: UpdatedFields = {
     ...character?.properties,
     ...edited,
   };

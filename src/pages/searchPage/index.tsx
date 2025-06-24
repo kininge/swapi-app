@@ -1,95 +1,58 @@
-import React, { useState, useRef, useMemo, useEffect } from 'react';
-import debounce from 'lodash.debounce';
-import CharacterCard from '../../components/characterCard';
-import { FixedSizeList } from 'react-window';
-import AutoSizer from 'react-virtualized-auto-sizer';
-import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import type { CHARACTER } from '../../types';
-import {
-  fetchSearchedCharacters,
-  resetSearchedCharacterSlice,
-} from '../../features/characters/searchSlice';
-
-const ROW_HEIGHT = 160; // Approximate height of each CharacterCard + margin
+import React from 'react';
+import CharacterList from '../../components/characterList';
+import { useSearchCharacters } from '../../hooks/useSearchCharacters';
 
 const SearchPage: React.FC = () => {
-  const [query, setQuery] = useState('');
-  const dispatch = useAppDispatch();
-  const characters: CHARACTER[] = useAppSelector((state) => state.searchedCharacters.list);
-  const status = useAppSelector((state) => state.searchedCharacters.status);
-  const error = useAppSelector((state) => state.searchedCharacters.error);
-  const isLoading = status == 'loading';
+  const { query, characters, isLoading, error, handleInputChange } = useSearchCharacters();
 
-  console.log(status, error, characters);
+  // const [query, setQuery] = useState('');
+  // const dispatch = useAppDispatch();
+  // const characters: CHARACTER[] = useAppSelector((state) => state.searchedCharacters.list);
+  // const status = useAppSelector((state) => state.searchedCharacters.status);
+  // const error = useAppSelector((state) => state.searchedCharacters.error);
+  // const isLoading = status == 'loading';
 
-  const debouncedSearch = useRef(
-    debounce((value: string) => {
-      dispatch(fetchSearchedCharacters(value.trim()));
-    }, 300)
-  ).current;
+  // // debounced search
+  // const debouncedSearch = useRef(
+  //   debounce((value: string) => {
+  //     dispatch(fetchSearchedCharacters(value.trim()));
+  //   }, 300)
+  // ).current;
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setQuery(value.trim()); // to show data in search
-    debouncedSearch(value.trim());
-  };
+  // // user input in search
+  // const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const value = e.target.value;
+  //   setQuery(value); // to show data in search
+  //   debouncedSearch(value.trim());
+  // };
 
-  const Row = useMemo(() => {
-    return ({ index, style }: { index: number; style: React.CSSProperties }) => {
-      const character = characters[index];
-      return (
-        <div style={style}>
-          <CharacterCard key={character.uid} character={character} />
-        </div>
-      );
-    };
-  }, [characters]);
-
-  useEffect(() => {
-    return () => {
-      dispatch(resetSearchedCharacterSlice());
-      debouncedSearch.cancel();
-    };
-  }, []);
+  // // component unmount
+  // useEffect(() => {
+  //   return () => {
+  //     dispatch(resetSearchedCharacterSlice());
+  //     debouncedSearch.cancel();
+  //   };
+  // }, []);
 
   return (
     <div className="p-4 max-w-4xl mx-auto">
-      <h1 className="text-3xl font-bold mb-6 text-white">Search Characters</h1>
-
       <input
         type="text"
         value={query}
         onChange={handleInputChange}
         placeholder="Search by name..."
-        className="w-full p-3 rounded-md bg-gray-800 text-white border border-gray-600 focus:outline-none focus:ring focus:ring-yellow-400"
+        className="w-full px-4 py-2 outline-none border border-theme-border focus:ring-2 focus:ring-theme-primary bg-theme-background text-white mb-4 rounded-3xl"
       />
 
-      {isLoading ? (
-        query.trim() ? (
-          <p className="text-white mt-6">Loading...</p>
-        ) : null
-      ) : error ? (
-        <p className="text-red-400 mt-6">{error}</p>
-      ) : query.trim().length > 0 && characters.length === 0 ? (
-        <p className="text-yellow-400 mt-6">No characters found for “{query.trim()}”.</p>
-      ) : (
-        <div className="mt-6 h-[600px]">
-          {characters.length > 0 && (
-            <AutoSizer>
-              {({ height, width }) => (
-                <FixedSizeList
-                  height={height}
-                  width={width}
-                  itemSize={ROW_HEIGHT}
-                  itemCount={characters.length}
-                >
-                  {Row}
-                </FixedSizeList>
-              )}
-            </AutoSizer>
-          )}
-        </div>
-      )}
+      <CharacterList
+        characters={characters}
+        isLoading={isLoading}
+        isIdle={query.trim() === ''}
+        error={error}
+        noCharacterMessage={`No character found for "${query.trim()}"`}
+        canLoadMore={false}
+        onLoadMore={() => {}}
+      />
     </div>
   );
 };

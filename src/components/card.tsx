@@ -1,14 +1,15 @@
 import React from 'react';
-import './card.css';
 
-type CardProps = {
+type CARD_PROP = {
   children?: React.ReactNode;
   className?: string;
 };
 
-export const Card: React.FC<CardProps> = ({ children, className }) => {
+export const Card: React.FC<CARD_PROP> = ({ children, className }) => {
   return (
-    <div className={`card ${className ?? ''}`}>
+    <div
+      className={`bg-theme-secondary text-theme-text rounded-3xl p-4 shadow-md ${className ?? ''}`}
+    >
       <div>{children}</div>
     </div>
   );

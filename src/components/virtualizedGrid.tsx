@@ -41,8 +41,18 @@ function VirtualizedGrid<T>({
               columnWidth={columnWidth}
               rowHeight={itemHeight}
               onItemsRendered={({ visibleRowStopIndex }) => {
+                const effectiveThreshold = Math.max(0, threshold - 2 * (columnCount - 1));
                 const lastRow = Math.ceil(items.length / columnCount) - 1;
-                if (onLoadMore && canLoadMore && visibleRowStopIndex === lastRow - threshold) {
+                const triggerRow: number = lastRow - effectiveThreshold;
+
+                console.log(
+                  'triggerRow',
+                  triggerRow,
+                  'visibleRowStopIndex: ',
+                  visibleRowStopIndex,
+                  visibleRowStopIndex === lastRow - threshold
+                );
+                if (onLoadMore && canLoadMore && visibleRowStopIndex === triggerRow) {
                   onLoadMore();
                 }
               }}

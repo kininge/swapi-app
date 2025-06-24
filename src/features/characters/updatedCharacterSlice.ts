@@ -1,10 +1,10 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import type { CHARACTER } from '../../types';
 
-export type EditedFields = Partial<CHARACTER['properties']>;
+export type UpdatedFields = Partial<CHARACTER['properties']>;
 
 interface EditCacheState {
-  editedCharactersById: Record<string, EditedFields>;
+  editedCharactersById: Record<string, UpdatedFields>;
 }
 
 const initialState: EditCacheState = {
@@ -15,7 +15,10 @@ export const editedCharacterSlice = createSlice({
   name: 'editedCharacter',
   initialState,
   reducers: {
-    setUpdatedCharacter: (state, action: PayloadAction<{ uid: string; changes: EditedFields }>) => {
+    setUpdatedCharacter: (
+      state,
+      action: PayloadAction<{ uid: string; changes: UpdatedFields }>
+    ) => {
       const { uid, changes } = action.payload;
       state.editedCharactersById[uid] = {
         ...state.editedCharactersById[uid],

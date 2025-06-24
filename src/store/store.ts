@@ -16,7 +16,7 @@ import characterReducer from '../features/characters/characterSlice';
 import searchedCharacterReducer from '../features/characters/searchSlice';
 import cacheReducer from '../features/cache/cacheSlice';
 import favoriteReducer from '../features/characters/favoriteSlice';
-import editedCharacterReducer from '../features/characters/editedCharacterSlice';
+import editedCharacterReducer from '../features/characters/updatedCharacterSlice';
 import { characterAPI } from '../features/characters/characterApi';
 
 // persist config for cache

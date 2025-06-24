@@ -5,29 +5,33 @@ import CharacterCardSkeleton from './skeletons/characterCardSkeleton';
 import VirtualizedGrid from './virtualizedGrid';
 
 type CharacterListProps = {
-  characters: CHARACTER[];
-  isLoading: boolean;
-  isIdle: boolean;
-  canLoadMore: boolean;
-  onLoadMore: () => void;
+  characters?: CHARACTER[];
+  isLoading?: boolean;
+  isIdle?: boolean;
+  error?: string | null;
+  noCharacterMessage?: string;
+  canLoadMore?: boolean;
+  onLoadMore?: () => void;
 };
 
 const ITEM_HEIGHT = 400;
 
 const CharacterList: React.FC<CharacterListProps> = ({
-  characters,
-  isLoading,
-  isIdle,
-  canLoadMore,
-  onLoadMore,
+  characters = [],
+  isLoading = false,
+  isIdle = false,
+  error = null,
+  noCharacterMessage = 'No character found',
+  canLoadMore = false,
+  onLoadMore = () => {},
 }) => {
   return (
     <>
-      {characters.length > 0 && (
+      {characters.length > 0 && error === null && (
         <VirtualizedGrid
           items={characters}
           itemHeight={ITEM_HEIGHT}
-          minColumnWidth={340}
+          minColumnWidth={380}
           renderItem={(character: CHARACTER) => <CharacterCard character={character} />}
           canLoadMore={canLoadMore}
           onLoadMore={onLoadMore}
@@ -36,7 +40,7 @@ const CharacterList: React.FC<CharacterListProps> = ({
       )}
 
       {/* Skeleton loader (only when list is already rendered) */}
-      {isLoading && (
+      {isLoading && error === null && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {Array.from({ length: 6 }).map((_, i) => (
             <CharacterCardSkeleton key={i} />
@@ -45,8 +49,8 @@ const CharacterList: React.FC<CharacterListProps> = ({
       )}
 
       {/* Empty state */}
-      {!isLoading && !isIdle && characters.length === 0 && (
-        <div className="text-center text-gray-400 mt-12">No characters found.</div>
+      {((isLoading === false && isIdle === false && characters.length === 0) || error !== null) && (
+        <div className="text-center text-gray-400 mt-12">{noCharacterMessage}</div>
       )}
     </>
   );
