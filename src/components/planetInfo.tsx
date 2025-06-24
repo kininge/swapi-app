@@ -23,7 +23,7 @@ const PlanetInfo: React.FC<PlanetInfoProps> = ({ planetUrl }) => {
   const renderPlanet = () => {
     const planetName = planet.properties.name;
     type PlanetKey = keyof typeof PLANETS;
-    const key = planetName.toLocaleUpperCase() as PlanetKey;
+    const key = planetName.split(' ').join('_').toLocaleUpperCase() as PlanetKey;
     const planetData: PLANET_EXTRA_DATA | undefined = PLANETS[key];
     let red = 0;
     let green = 0;
@@ -48,28 +48,30 @@ const PlanetInfo: React.FC<PlanetInfoProps> = ({ planetUrl }) => {
 
         {/* planet info card */}
         <div
-          className="planet-info-card"
+          className={`planet-info-card capitalize ${planet.properties.name.toLocaleLowerCase() === 'unknown' ? 'flex items-center justify-center' : ''}`}
           style={{
             backgroundImage: `radial-gradient(circle at left center, rgba(${red}, ${green}, ${blue}, 1) 10%, rgba(${red}, ${green}, ${blue}, 0.6) 15%, rgba(0, 0, 0, 0) 60%)`,
           }}
         >
           <h3 className="text-2xl mt-2">{planet.properties.name}</h3>
-          <div className="planet-details mt-8 ml-[90px] pr-4">
-            {(
-              ['climate', 'population', 'terrain', 'rotation_period', 'orbital_period'] as const
-            ).map((key) => (
-              <div className="flex" key={key}>
-                <span className="font-medium text-left w-[130px] capitalize">
-                  {key.replace('_', ' ').replace(/\b\w/g, (l) => l.toUpperCase())}:
-                </span>
-                <span className="font-light text-gray-500 capitalize">
-                  {planet.properties[key].split(',').length > 1
-                    ? `${planet.properties[key].split(',')[0]} ...`
-                    : planet.properties[key]}{' '}
-                </span>
-              </div>
-            ))}
-          </div>
+          {planet.properties.name.toLocaleLowerCase() !== 'unknown' && (
+            <div className="planet-details mt-8 ml-[90px] pr-4">
+              {(
+                ['climate', 'population', 'terrain', 'rotation_period', 'orbital_period'] as const
+              ).map((key) => (
+                <div className="flex" key={key}>
+                  <span className="font-medium text-left w-[130px] capitalize">
+                    {key.replace('_', ' ').replace(/\b\w/g, (l) => l.toUpperCase())}:
+                  </span>
+                  <span className="font-light text-gray-500 capitalize">
+                    {planet.properties[key].split(',').length > 1
+                      ? `${planet.properties[key].split(',')[0]} ...`
+                      : planet.properties[key]}{' '}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     );
