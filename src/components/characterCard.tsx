@@ -3,7 +3,7 @@ import { Card } from './card';
 import type { CHARACTER } from '../types';
 import { Link } from 'react-router-dom';
 import PlanetInfo from './planetInfo';
-import FavoriteToggle from './favoriteToggle'; // 📦 Reusable favorite toggle
+import FavoriteToggle from './favoriteToggle';
 import type { EditedFields } from '../features/characters/editedCharacterSlice';
 import { useAppSelector } from '../store/hooks';
 
@@ -23,18 +23,20 @@ const CharacterCard: React.FC<{ character: CHARACTER }> = ({ character }) => {
   return (
     <div className="relative p-2 group">
       <Link to={`/character/${character.uid}`} state={{ character }}>
-        <Card title={name ?? ''}>
+        <Card>
           <>
-            {/* ❤️ Favorite button in top right corner */}
-            <div className="absolute top-2 right-2 z-10">
-              <FavoriteToggle character={character} size="md" />
+            <div className="flex justify-between mb-10">
+              <h2 className="text-2xl font-bold text-theme-primary font-display">{name}</h2>
+
+              <div className="flex">
+                <div className="text-2xl">{gender}</div>
+                <div className="ml-5">
+                  <FavoriteToggle character={character} size="lg" />
+                </div>
+              </div>
             </div>
 
-            <div>Gender: {gender}</div>
-            <div>
-              Hometown:&nbsp;
-              <PlanetInfo planetUrl={character.properties.homeworld} />
-            </div>
+            <PlanetInfo planetUrl={character.properties.homeworld} />
           </>
         </Card>
       </Link>

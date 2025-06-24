@@ -13,7 +13,7 @@ import {
 } from '../../features/characters/characterSlice';
 import debounce from 'lodash.debounce';
 
-const ITEM_HEIGHT = 160;
+const ITEM_HEIGHT = 400;
 
 const CharacterListPage: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -57,11 +57,14 @@ const CharacterListPage: React.FC = () => {
     setPage((previousPage) => previousPage + 1);
   };
 
-  // Renderer for each row
-  const renderRow = ({ index, style }: { index: number; style: React.CSSProperties }) => (
-    <div style={style}>
-      <CharacterCard character={characters[index]} />
-    </div>
+  const renderRow = React.memo(
+    ({ index, style }: { index: number; style: React.CSSProperties }) => {
+      return (
+        <div style={style}>
+          <CharacterCard character={characters[index]} />
+        </div>
+      );
+    }
   );
 
   return (

@@ -1,0 +1,14 @@
+.planet-card {
+  position: relative;
+  height: 250px;
+}
+.planet-image {
+  width: 220px;
+  top: 15px;
+  position: absolute;
+}
+.planet-info-card {
+  padding: 1rem;
+  margin-left: 120px;
+  @apply h-[250px] w-[380px] bg-theme-backgroundAlt rounded-3xl shadow-md;
+}

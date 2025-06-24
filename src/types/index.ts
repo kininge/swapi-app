@@ -119,3 +119,8 @@ export interface PLANET {
     url: string;
   };
 }
+
+export interface PLANET_EXTRA_DATA {
+  IMAGE: string;
+  COLOR: { RED: number; GREEN: number; BLUE: number };
+}
