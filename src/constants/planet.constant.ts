@@ -57,4 +57,40 @@ export const PLANETS: Record<string, PLANET_EXTRA_DATA> = {
     IMAGE: '/assets/planets/trandosha.png',
     COLOR: { RED: 183, GREEN: 186, BLUE: 156 },
   },
+  BESTINE_IV: {
+    IMAGE: '/assets/planets/bestine_iv.png',
+    COLOR: { RED: 113, GREEN: 167, BLUE: 215 },
+  },
+  CATO_NEIMOIDIA: {
+    IMAGE: '/assets/planets/cato_neimoidia.png',
+    COLOR: { RED: 78, GREEN: 120, BLUE: 112 },
+  },
+  CORUSCANT: {
+    IMAGE: '/assets/planets/coruscant.png',
+    COLOR: { RED: 116, GREEN: 93, BLUE: 88 },
+  },
+  DATHOMIR: {
+    IMAGE: '/assets/planets/dathomir.png',
+    COLOR: { RED: 203, GREEN: 99, BLUE: 105 },
+  },
+  ENDOR: {
+    IMAGE: '/assets/planets/endor.png',
+    COLOR: { RED: 143, GREEN: 172, BLUE: 182 },
+  },
+  MALASTARE: {
+    IMAGE: '/assets/planets/malastare.png',
+    COLOR: { RED: 97, GREEN: 106, BLUE: 68 },
+  },
+  RYLOTH: {
+    IMAGE: '/assets/planets/ryloth.png',
+    COLOR: { RED: 212, GREEN: 147, BLUE: 78 },
+  },
+  SULLUST: {
+    IMAGE: '/assets/planets/sullust.png',
+    COLOR: { RED: 205, GREEN: 148, BLUE: 81 },
+  },
+  TOYDARIA: {
+    IMAGE: '/assets/planets/toydaria.png',
+    COLOR: { RED: 157, GREEN: 176, BLUE: 135 },
+  },
 };
