@@ -3,9 +3,9 @@ import { Card } from './card';
 import type { CHARACTER } from '../types';
 import { Link } from 'react-router-dom';
 import PlanetInfo from './planetInfo';
-import FavoriteToggle from './favoriteToggle';
 import type { EditedFields } from '../features/characters/editedCharacterSlice';
 import { useAppSelector } from '../store/hooks';
+import GenderInfo from './genderInfo';
 
 const CharacterCard: React.FC<{ character: CHARACTER }> = ({ character }) => {
   const edited: EditedFields = useAppSelector((state) => {
@@ -20,12 +20,10 @@ const CharacterCard: React.FC<{ character: CHARACTER }> = ({ character }) => {
 
   const { gender, name } = latestCharacter;
 
-  const favoriteToggleButton = useMemo(() => {
-    return <FavoriteToggle character={character} size="lg" />;
-  }, [character]);
+  const renderGender = useMemo(() => <GenderInfo gender={gender ?? ''} />, [gender]);
 
   const renderPlanetCard = useMemo(() => {
-    return <PlanetInfo planetUrl={character.properties.homeworld} />;
+    return <PlanetInfo planetUrl={character.properties.homeworld} variant="card" />;
   }, [character.properties.homeworld]);
 
   return (
@@ -34,13 +32,14 @@ const CharacterCard: React.FC<{ character: CHARACTER }> = ({ character }) => {
         <Card>
           <>
             <div className="flex justify-between mb-10">
+              {/* character name */}
               <h2 className="text-2xl font-bold text-theme-primary font-display">{name}</h2>
 
-              <div className="flex">
-                <div className="text-2xl">{gender}</div>
-                <div className="ml-5">{favoriteToggleButton}</div>
-              </div>
+              {/* gender */}
+              {renderGender}
             </div>
+
+            {/* planet */}
             {renderPlanetCard}
           </>
         </Card>
@@ -49,4 +48,4 @@ const CharacterCard: React.FC<{ character: CHARACTER }> = ({ character }) => {
   );
 };
 
-export default CharacterCard;
+export default React.memo(CharacterCard);
