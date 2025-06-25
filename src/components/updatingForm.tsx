@@ -17,11 +17,12 @@ const UpdatingForm: React.FC<UPDATING_FORM_PROP> = ({
     <div className="space-y-2 mt-4">
       {['gender', 'height', 'mass', 'skin_color', 'hair_color', 'eye_color'].map((field) => (
         <div key={field}>
-          <label className="block text-sm font-medium capitalize mb-1">
+          <label htmlFor={field} className="block text-sm font-medium capitalize mb-1">
             {field.replace('_', ' ')}
           </label>
           {field === 'gender' ? (
             <select
+              id="gender"
               name="gender"
               value={updatedCharacter.gender}
               onChange={(e) => {
@@ -35,6 +36,7 @@ const UpdatingForm: React.FC<UPDATING_FORM_PROP> = ({
             </select>
           ) : (
             <input
+              id={field}
               type="text"
               name={field}
               value={updatedCharacter[field] || ''}

@@ -33,6 +33,9 @@ const favoritesSlice = createSlice({
         };
       }
     },
+    resetFavorites: (state) => {
+      state.favoriteCharacters = {};
+    },
   },
 });
 

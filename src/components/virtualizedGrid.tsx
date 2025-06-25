@@ -24,6 +24,13 @@ function VirtualizedGrid<T>({
   threshold = 5,
   className = 'h-[calc(100vh-120px)]',
 }: VirtualizedGridProps<T>) {
+  // load more logic hit
+  const shouldTriggerLoad = (visibleRowStopIndex: number, columnCount: number): boolean => {
+    const lastRow = Math.ceil(items.length / columnCount) - 1;
+    const effectiveThreshold = Math.max(0, threshold - 2 * (columnCount - 1));
+    return visibleRowStopIndex === lastRow - effectiveThreshold;
+  };
+
   return (
     <div className={className}>
       <AutoSizer>
@@ -41,18 +48,11 @@ function VirtualizedGrid<T>({
               columnWidth={columnWidth}
               rowHeight={itemHeight}
               onItemsRendered={({ visibleRowStopIndex }) => {
-                const effectiveThreshold = Math.max(0, threshold - 2 * (columnCount - 1));
-                const lastRow = Math.ceil(items.length / columnCount) - 1;
-                const triggerRow: number = lastRow - effectiveThreshold;
-
-                console.log(
-                  'triggerRow',
-                  triggerRow,
-                  'visibleRowStopIndex: ',
-                  visibleRowStopIndex,
-                  visibleRowStopIndex === lastRow - threshold
-                );
-                if (onLoadMore && canLoadMore && visibleRowStopIndex === triggerRow) {
+                if (
+                  onLoadMore &&
+                  canLoadMore &&
+                  shouldTriggerLoad(visibleRowStopIndex, columnCount)
+                ) {
                   onLoadMore();
                 }
               }}
@@ -60,7 +60,11 @@ function VirtualizedGrid<T>({
               {({ rowIndex, columnIndex, style }) => {
                 const index = rowIndex * columnCount + columnIndex;
                 const item = items[index];
-                return item ? <div style={style}>{renderItem(item, index)}</div> : null;
+                return item ? (
+                  <div style={style} data-testid="grid-item">
+                    {renderItem(item, index)}
+                  </div>
+                ) : null;
               }}
             </FixedSizeGrid>
           );

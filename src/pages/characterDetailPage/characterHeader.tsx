@@ -22,7 +22,7 @@ const CharacterHeader: React.FC<CharacterHeaderProps> = ({ character, isUpdating
             Update
           </button>
 
-          <FavoriteToggle character={character!} size="lg" />
+          <FavoriteToggle character={character} size="lg" />
         </div>
       )}
     </div>

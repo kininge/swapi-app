@@ -9,7 +9,7 @@ export async function fetchListFromAPI<T>(url: string): Promise<T[]> {
     console.log('LIST Url: ', url, json);
     return json.results || json.result || [];
   } catch (error) {
-    console.error('Fetch error for:', url, error);
+    console.log('Fetch error for:', url, error);
     return [];
   }
 }
@@ -23,7 +23,7 @@ export async function fetchDetailFromAPI<T>(url: string): Promise<T> {
     console.log('DETAIL Url: ', url, json);
     return json.result;
   } catch (error) {
-    console.error('Fetch error for:', url, error);
+    console.log('Fetch error for:', url, error);
     throw error;
   }
 }

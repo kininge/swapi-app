@@ -33,3 +33,5 @@ export async function fetchPlanetById(id: string): Promise<PLANET | null> {
     throw e;
   }
 }
+
+export const __TEST_ONLY__planetFetchTracker = planetFetchTracker;
