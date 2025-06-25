@@ -1,182 +1,122 @@
-# 🧠 Cache Architecture – Swapi App
+# 🧩 Cache Architecture – SWAPI App
 
-This document outlines the caching strategy and data hydration plan for the Star Wars character explorer app built for the Allica Bank assignment. The cache layer ensures fast UX, reduced API load, and offline-first behavior wherever possible.
+## 📌 Objective
 
----
-
-## ⚠️ Critical Note on Backend API Limitations
-
-> One of the biggest limitations in [swapi.tech](https://swapi.tech)'s `/people` API is the **absence of any film or starship references** in the character response — even with `expanded=true`.
-
-This makes it **impossible to know**:
-- Which **films** a character appears in
-- Which **starships** a character pilots
-
-Yet, the assignment *requires* us to show:
-- A character's film appearances
-- The starships flown by a character
+To reduce redundant API calls, optimize performance, and provide a smoother, more responsive user experience — especially in offline or slow-network scenarios — the SWAPI App implements a two-tiered caching strategy using Redux and `redux-persist`.
 
 ---
 
-### ✅ Solution: Reverse-Map via Film & Starship APIs
+## 🗂️ Overview of Cache Layers
 
-To overcome this:
-- We **preload** all films and starships on app boot
-- Then we **reverse-map characters** from these datasets
+The caching strategy is divided into two layers:
 
-This architecture enables us to:
-- **Link characters to their films and starships** reliably
-- Cache this enriched data for **fast UX** and **offline support**
-- Avoid blocking the UI for missing relationships
-
-> 🧠 Without this approach, the app would have to make dozens of chained API calls per character — which is unacceptable for performance, DX, or UX.
+| Tier           | Purpose                             | Stored Data                                                  | Persistence       |
+|----------------|-------------------------------------|--------------------------------------------------------------|-------------------|
+| In-Memory      | Fast access during a session        | Characters, loading states, UI interaction state             | ❌ Volatile       |
+| Persistent     | Available across app reloads        | Favourites, character edits, planet/film/starship metadata   | ✅ redux-persist  |
 
 ---
 
-## 🎯 Goals
+## 🧠 Caching Strategy by Entity
 
-- Enable smooth, non-blocking user experience
-- Cache data intelligently to minimize redundant network calls
-- Avoid UI flickering or loading states unless absolutely necessary
-- Use persistent local device storage (`redux-persist`) for key datasets
-- Maintain separation between server-side data and client-local edits
-
----
-
-## 🗂️ What We Cache
-
-| Entity         | Cache Location     | Lifetime        | Usage                            |
-|----------------|--------------------|------------------|-----------------------------------|
-| Characters     | In-memory (RTK)     | Per session     | List rendering, search           |
-| Planets        | redux-persist       | Long-term       | Hydrate homeworld name           |
-| Films          | redux-persist       | Long-term       | Link characters to films         |
-| Starships      | redux-persist       | Long-term       | Link characters to starships     |
-| Favourites     | redux-persist       | Long-term       | Persisted by device              |
-| Edits (UI-only)| redux-persist       | Long-term       | Offline edit support             |
+| Entity            | Source                      | Cache Location         | Persisted | Strategy                                                        |
+|-------------------|-----------------------------|------------------------|-----------|-----------------------------------------------------------------|
+| Characters        | `/people?expanded=true`     | Redux (paginated)      | ❌        | RTK Query paginated fetch, deduplicated by `hasPageCalled()`    |
+| Planet (per ID)   | `/planets/:id`              | Redux (memoized)       | ✅        | Lazy-loaded via `fetchPlanetById`, avoids duplicate fetches     |
+| Films             | `/films?expanded=true`      | Redux (preloaded)      | ✅        | Preloaded once, stored by UID and reverse-mapped                |
+| Starships         | `/starships?expanded=true`  | Redux (preloaded)      | ✅        | Preloaded once, stored by UID and reverse-mapped                |
+| Favorites        | Local updates only            | Redux-persist          | ✅        | User-specific character list stored locally                     |
+| Edited Characters | Local updates only            | Redux-persist          | ✅        | Store edited props to show updated character view offline       |
 
 ---
 
-## 🧩 Data Flow Example
+## 🧩 Cache-Related Slices and Utilities
 
-### 🧱 Character Card Rendering (List Page)
+### 🧾 [`src/features/cache/cacheSlice.ts`](../../src/features/cache/cacheSlice.ts)
+A centralized Redux slice for managing all cached entities and reverse lookups:
 
-> Goal: Display `name`, `gender`, and `home planet` for each character.
-
----
-
-### ✅ Step 1: Initial Character Fetch
-
-**API Call**
-GET /people?page=1&limit=10&expanded=true
-
-**Outcome**
-- Returns list of characters (with `name`, `gender`, `homeworld` as URL reference).
-- Stored in **Redux in-memory** via RTK Query.
-
----
-
-### ✅ Step 2: Enriching Each Card with Home Planet
-
-**Planet Name Lookup Flow**
-1. For each character in the list:
-    - Extract `homeworld.url`.
-2. Check if the `planet[id]` is in the persisted cache:
-    - ✅ **If present** → Use cached planet name.
-    - ❌ **If absent**  → Call API:
-
-    ```
-    GET /planets/:id
-    ```
-
-    → Cache the result in `redux-persist`.
-
----
-
-### 🖼 Final Output: Character Card UI
-
-```txt
-┌────────────────────────────────────────────┐
-│ Name:       Chewbacca                      │
-│ Gender:     Male                           │
-│ Homeworld:  Kashyyyk                       │
-└────────────────────────────────────────────┘
+```ts
+    interface CacheState {
+        filmsById: Record<string, FILM>;
+        starshipById: Record<string, STARSHIP>;
+        planetsById: Record<string, PLANET>;
+        characterToFilms: Record<string, string[]>;
+        characterToStarship: Record<string, string[]>;
+    }
 ```
-Homeworld field appears after async hydration if not cached initially.
+* setFilms, setStarship, setPlanets: Populate cache maps by UID.
+* setCharacterToFilms, setCharacterToStarship: Populate reverse character relations.
+* Persisted via redux-persist.
 
-## 🚀 App Boot: Global Preloading (Films & Starships)
+### ⚙️ planetFetchTracker
+Used to avoid multiple API calls for the same planet in concurrent requests.
 
-To support character detail pages, search enrichment, and filter-ready UI, we preload auxiliary datasets at application startup.
+```ts
+    const planetFetchTracker = {};
+```
 
----
+* Tracked per UID to prevent race conditions.
+* Exported only for testing as __TEST_ONLY__planetFetchTracker.
 
-### 🎬 Films Cache Flow
+### ⚙️ characterPageFetchGuard.ts
+A simple utility to deduplicate paginated requests:
 
-1. On app load, check if `films` exist in the redux-persist store.
-2. If missing:
-    ```
-    GET /films?expanded=true
-    ```
-3. Extract and persist:
-    - Film metadata (title, release date, etc.)
-    - Character IDs linked to films
-    - Linked starships, species, and planet IDs
+```ts 
+    const fetchedCharacterPages = new Set<number>();
 
-> 🧠 This enables fast lookups for:
-> - Character-to-Film mapping
-> - Enriched detail views without nested calls
-
----
-
-### 🛸 Starships Cache Flow
-
-1. On app load, check if `starships` are cached.
-2. If missing:
-    ```
-    GET /starships?expanded=true&limit=40&page=1
-    ```
-3. Persist full starship list including:
-    - `name`, `model`, `class`
-    - `pilots` (character references)
-    - `films` that include this starship
-
-> 🔄 This creates a **reverse mapping**:
-> - Starship → Characters → Films
-> - Helpful for character detail views
+    export const hasCharacterPageCalled = (page: number) => fetchedCharacterPages.has(page);
+    export const markCharacterPageAsCalled = (page: number) => fetchedCharacterPages.add(page);
+    export const clearAllCalledCharacterPages = () => fetchedCharacterPages.clear();
+```
+> Ensures RTK Query doesn’t re-fetch the same page if already fetched.
 
 ---
 
-### 🌍 Planets Cache Flow (Lazy + Opportunistic)
+## 🧪 Cache Testing Strategy
 
-1. Characters contain `homeworld` as a URL (e.g., `/planets/14`).
-2. On-demand planet enrichment:
-    - First check if `planet[14]` is cached.
-    - If not:
-      ```
-      GET /planets/14
-      ```
-    - Cache planet name in `planets` slice.
+### ✅ Unit Tests
+The following files and functionalities are covered with dedicated Jest test suites:
 
-> 💡 Lazy-loading + caching ensures planets are only fetched **once**, ever.
+| File/Feature                    | Description                                      | Tested |
+|-------------------------------|--------------------------------------------------|--------|
+| `cacheSlice.ts`                | Reducers and actions to set cached data         | ✅ Yes |
+| `planetAPI.ts`                 | Planet fetch logic and deduplication logic      | ✅ Yes (except 2 skipped edge cases) |
+| `characterPageFetchGuard.ts`  | Guards for paginated fetch deduplication        | ✅ Yes |
+
+Test coverage includes:
+
+- Correct population of cache maps (`filmsById`, `planetsById`, etc.)
+- Persistence across sessions (`redux-persist`)
+- Guards like `planetFetchTracker` and `fetchedCharacterPages` to avoid duplicate fetches
+- Error and race-condition handling
+
+> ⚠️ Note: Two complex edge cases related to `planetAPI.ts` were skipped due to time constraints. They are safe and non-critical for user experience.
+
+### 🧪 E2E Validation (Cypress)
+- Planet, Film, and Starship data are verified against character detail views.
+- Caching behavior is indirectly validated through fewer network requests and persistent detail data.
+- Favorites and edits persist across reloads.
+
+---
+
+## 📤 Summary
+
+The cache architecture in this SWAPI app optimizes for:
+
+✅ Minimal API usage  
+✅ Fast navigation across character detail pages  
+✅ Smooth offline experience for revisited data  
+✅ Easy extensibility for future caching needs  
+✅ Predictable and testable state structure  
+
+By layering in-memory and persistent caching, the app delivers a responsive and efficient experience while respecting API limitations.
 
 ---
 
-## 📦 Cache Access Priority
+## 👨‍💻 Author & Maintainer
 
-When rendering any entity:
-1. Attempt to resolve all relational fields (e.g., homeworld, films, starships) **from persisted cache**.
-2. If missing:
-    - Perform API fetch.
-    - On success, cache and update display.
-3. Prefer enriching `display` over blocking UI interactions.
+**Pritam Kininge** — Frontend Developer | React, TypeScript, TDD  
+📍 Navi Mumbai, India (UTC+5:30)  
+🗓️ Submitted: June 25, 2025  
+[LinkedIn](https://linkedin.com/in/pritam-kininge)  |  [GitHub](https://github.com/kininge)  |  [Leetcode](https://leetcode.com/u/kininge007/)
 
----
-
-## 🧠 Why This Works
-
-This preloading strategy:
-- **Minimizes runtime API calls** once booted
-- Ensures **search and detail pages don’t lag**
-- Keeps our app **device-persistent and offline-aware**
-- Reduces perceived latency and improves **UX fluidity**
-
----

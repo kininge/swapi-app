@@ -54,6 +54,12 @@ built with **React**, **TypeScript**, **RTK Query**, **Redux Persist**, and **Ta
 
 ---
 
+## ⚙️ High-Level Architecture
+
+![SWAPI Architecture](docs/architecture/architecture.png)
+
+---
+
 ## ⚠️ API Limitations & Design Solutions
 
 The [SWAPI.tech](https://swapi.tech) API offers rich Star Wars data — but building a scalable, performant, and user-friendly application required working around some notable limitations.
@@ -349,9 +355,24 @@ This project is licensed under the [MIT License](./LICENSE).
 
 ---
 
+## 📤 Submission Structure
+
+| Item                             | Included |
+|----------------------------------|----------|
+| ✅ Source Code                   | Yes      |
+| ✅ README with setup/use         | Yes      |
+| ✅ `docs/architecture.md`        | Yes      |
+| ✅ `SUBMISSION_CHECKLIST`        | Yes      |
+| ✅ Test Coverage Report          | Yes      |
+| ✅ Screenshots / GIFs            | Yes (if time permits) |
+
+The project is organized and submitted in a self-contained manner, ready to be reviewed or deployed.
+
+---
+
 ## 👨‍💻 Author & Maintainer
 
 **Pritam Kininge** — Frontend Developer | React, TypeScript, TDD  
 📍 Navi Mumbai, India (UTC+5:30)  
-🗓️ Submitted: June 22, 2025  
+🗓️ Submitted: June 26, 2025  
 [LinkedIn](https://linkedin.com/in/pritam-kininge)  |  [GitHub](https://github.com/kininge)  |  [Leetcode](https://leetcode.com/u/kininge007/)

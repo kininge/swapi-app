@@ -22,7 +22,7 @@
     "ecmaVersion": 12,
     "sourceType": "module"
   },
-  "plugins": ["react", "jsx-a11y", "react-hooks", "import", "@typescript-eslint"],
+  "plugins": ["react", "jsx-a11y", "react-hooks", "import", "@typescript-eslint", "unused-imports"],
   "settings": {
     "react": {
       "version": "detect"
@@ -30,6 +30,11 @@
   },
   "rules": {
     "react/react-in-jsx-scope": "off",
+    "unused-imports/no-unused-imports": "warn",
+    "unused-imports/no-unused-vars": [
+      "warn",
+      { "vars": "all", "args": "after-used", "ignoreRestSiblings": true }
+    ],
     "@typescript-eslint/no-unused-vars": [
       "warn",
       {
