@@ -10,12 +10,20 @@ type PLANET_CARD_INFO_PROP = {
 
 const PlanetCardInfo: React.FC<PLANET_CARD_INFO_PROP> = ({ planet, loading, error }) => {
   if (loading) {
-    return <div className="h-[250px] w-full bg-gray-100 animate-pulse rounded-lg shadow" />;
+    return (
+      <div
+        data-testid="planet-info-loading"
+        className="h-[250px] w-full bg-gray-100 animate-pulse rounded-lg shadow"
+      />
+    );
   }
 
   if (error || !planet) {
     return (
-      <div className="h-[250px] w-full bg-red-100 text-red-600 flex items-center justify-center rounded-lg shadow">
+      <div
+        data-testid="planet-info-error"
+        className="h-[250px] w-full bg-red-100 text-red-600 flex items-center justify-center rounded-lg shadow"
+      >
         Failed to load planet
       </div>
     );
@@ -26,7 +34,10 @@ const PlanetCardInfo: React.FC<PLANET_CARD_INFO_PROP> = ({ planet, loading, erro
   const planetData: PLANET_EXTRA_DATA | undefined = PLANETS[key];
 
   return (
-    <div className="h-[250px] w-full relative rounded-lg overflow-hidden shadow bg-white">
+    <div
+      data-testid="planet-info"
+      className="h-[250px] w-full relative rounded-lg overflow-hidden shadow bg-white"
+    >
       {planetData?.IMAGE && (
         <img
           src={planetData.IMAGE}

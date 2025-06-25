@@ -16,7 +16,7 @@ import characterReducer from '../features/characters/characterSlice';
 import searchedCharacterReducer from '../features/characters/searchSlice';
 import cacheReducer from '../features/cache/cacheSlice';
 import favoriteReducer from '../features/characters/favoriteSlice';
-import editedCharacterReducer from '../features/characters/updatedCharacterSlice';
+import updatedCharacterReducer from '../features/characters/updatedCharacterSlice';
 import { characterAPI } from '../features/characters/characterApi';
 
 // persist config for cache
@@ -28,18 +28,17 @@ const favoritesPersistConfig = {
   key: 'favorite',
   storage,
 };
-const editedCharacterPersistConfig = {
-  key: 'editedCache',
+const updatedCharacterPersistConfig = {
+  key: 'updatedCache',
   storage,
 };
-
 const rootReducer = combineReducers({
   [characterAPI.reducerPath]: characterAPI.reducer,
   characters: characterReducer,
   searchedCharacters: searchedCharacterReducer,
   cache: persistReducer(cachePersistConfig, cacheReducer),
   favorite: persistReducer(favoritesPersistConfig, favoriteReducer),
-  editedCharacter: persistReducer(editedCharacterPersistConfig, editedCharacterReducer),
+  updatedCharacter: persistReducer(updatedCharacterPersistConfig, updatedCharacterReducer),
 });
 
 export const store = configureStore({
@@ -53,6 +52,6 @@ export const store = configureStore({
 });
 
 export const persistor = persistStore(store);
-
+export default rootReducer;
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;

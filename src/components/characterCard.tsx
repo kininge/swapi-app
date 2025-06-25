@@ -8,14 +8,12 @@ import { useAppSelector } from '../store/hooks';
 import GenderInfo from './genderInfo';
 
 const CharacterCard: React.FC<{ character: CHARACTER }> = ({ character }) => {
-  const edited: UpdatedFields = useAppSelector((state) => {
-    // If character is not available yet, return undefined
-    if (!character) return {};
-    return state.editedCharacter.editedCharactersById[character!.uid];
-  });
+  const updated = useAppSelector(
+    (state) => state.updatedCharacter.updatedCharactersById[character.uid]
+  );
   const latestCharacter: UpdatedFields = {
     ...character?.properties,
-    ...edited,
+    ...updated,
   };
 
   const { gender, name } = latestCharacter;

@@ -10,7 +10,7 @@ export const Card: React.FC<CARD_PROP> = ({ children, className }) => {
     <div
       className={`bg-theme-secondary text-theme-text rounded-3xl p-4 shadow-md ${className ?? ''}`}
     >
-      <div>{children}</div>
+      {children}
     </div>
   );
 };

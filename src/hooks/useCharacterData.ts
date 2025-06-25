@@ -28,7 +28,7 @@ export const useCharacterData = () => {
   // updated character data ---> there no api to update - we cached the update
   const updated: UpdatedFields = useAppSelector((state) => {
     if (!character) return {};
-    return state.editedCharacter.editedCharactersById[character.uid];
+    return state.updatedCharacter.updatedCharactersById[character.uid];
   });
 
   // character data and updated character data combined to show update data

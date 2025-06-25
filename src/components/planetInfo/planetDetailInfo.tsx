@@ -10,12 +10,20 @@ type PLANET_DETAIL_INFO_PROP = {
 
 const PlanetDetailInfo: React.FC<PLANET_DETAIL_INFO_PROP> = ({ planet, loading, error }) => {
   if (loading) {
-    return <div className="h-[300px] w-full bg-gray-100 animate-pulse rounded-xl shadow" />;
+    return (
+      <div
+        data-testid="planet-info-loading"
+        className="h-[300px] w-full bg-gray-100 animate-pulse rounded-xl shadow"
+      />
+    );
   }
 
   if (error || !planet) {
     return (
-      <div className="h-[300px] w-full bg-red-100 text-red-600 flex items-center justify-center rounded-xl shadow">
+      <div
+        data-testid="planet-info-error"
+        className="h-[300px] w-full bg-red-100 text-red-600 flex items-center justify-center rounded-xl shadow"
+      >
         Planet info unavailable
       </div>
     );
@@ -30,11 +38,12 @@ const PlanetDetailInfo: React.FC<PLANET_DETAIL_INFO_PROP> = ({ planet, loading, 
   const blue = planetData?.COLOR.BLUE ?? 0;
 
   const gradientStyle = {
-    backgroundImage: `radial-gradient(circle at left center, rgba(${red}, ${green}, ${blue}, 1) 10%, rgba(${red}, ${green}, ${blue}, 0.6) 15%, rgba(0, 0, 0, 0) 60%)`,
+    backgroundImage: `radial-gradient(circle at left center, rgba(${red},${green},${blue},1) 10%, rgba(${red},${green},${blue},0.6) 15%, rgba(0, 0, 0, 0) 60%)`,
   };
 
   return (
     <div
+      data-testid="planet-info"
       className="planet-info-card p-4 rounded-xl shadow relative overflow-hidden"
       style={gradientStyle}
     >

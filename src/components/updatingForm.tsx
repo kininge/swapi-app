@@ -15,7 +15,7 @@ const UpdatingForm: React.FC<UPDATING_FORM_PROP> = ({
 }) => {
   return (
     <div className="space-y-2 mt-4">
-      {['gender', 'height', 'mass', 'hair_color', 'eye_color'].map((field) => (
+      {['gender', 'height', 'mass', 'skin_color', 'hair_color', 'eye_color'].map((field) => (
         <div key={field}>
           <label className="block text-sm font-medium capitalize mb-1">
             {field.replace('_', ' ')}

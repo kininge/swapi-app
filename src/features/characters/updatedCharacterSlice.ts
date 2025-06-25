@@ -4,11 +4,11 @@ import type { CHARACTER } from '../../types';
 export type UpdatedFields = Partial<CHARACTER['properties']>;
 
 interface EditCacheState {
-  editedCharactersById: Record<string, UpdatedFields>;
+  updatedCharactersById: Record<string, UpdatedFields>;
 }
 
 const initialState: EditCacheState = {
-  editedCharactersById: {},
+  updatedCharactersById: {},
 };
 
 export const editedCharacterSlice = createSlice({
@@ -20,13 +20,13 @@ export const editedCharacterSlice = createSlice({
       action: PayloadAction<{ uid: string; changes: UpdatedFields }>
     ) => {
       const { uid, changes } = action.payload;
-      state.editedCharactersById[uid] = {
-        ...state.editedCharactersById[uid],
+      state.updatedCharactersById[uid] = {
+        ...state.updatedCharactersById[uid],
         ...changes,
       };
     },
     resetCharacterUpdates: (state, action: PayloadAction<string>) => {
-      delete state.editedCharactersById[action.payload];
+      delete state.updatedCharactersById[action.payload];
     },
   },
 });
