@@ -41,18 +41,20 @@ const PlanetDetailInfo: React.FC<PLANET_DETAIL_INFO_PROP> = ({ planet, loading, 
     backgroundImage: `radial-gradient(circle at left center, rgba(${red},${green},${blue},1) 5%, rgba(${red},${green},${blue},0.6) 10%, rgba(0, 0, 0, 0) 30%)`,
   };
 
-  return (
+  return planetName.toLowerCase() === 'unknown' ? (
+    <div className="planet-info-card h-56 bg-theme-secondary p-4 rounded-xl shadow relative overflow-hidden"></div>
+  ) : (
     <div
       data-testid="planet-info"
-      className="planet-info-card bg-theme-secondary p-4 rounded-xl shadow relative overflow-hidden"
-      style={gradientStyle}
+      className="planet-info-card h-56 bg-theme-secondary p-4 rounded-xl shadow relative overflow-hidden"
+      style={red === 0 && green === 0 && blue === 0 ? {} : gradientStyle}
     >
       {planetData?.IMAGE && (
         <img
           data-testid="planet-image"
           src={planetData.IMAGE}
           alt={planetName}
-          className="absolute z-50 left-[-12%] top-1/2 -translate-y-1/2 h-40 w-auto object-contain opacity-80"
+          className="absolute z-50 left-[-85px] top-1/2 -translate-y-1/2 h-40 w-auto object-contain opacity-80"
         />
       )}
 

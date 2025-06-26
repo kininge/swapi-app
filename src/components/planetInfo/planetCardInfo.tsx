@@ -13,7 +13,7 @@ const PlanetCardInfo: React.FC<PLANET_CARD_INFO_PROP> = ({ planet, loading, erro
     return (
       <div
         data-testid="planet-info-loading"
-        className="h-[250px] w-full bg-gray-100 animate-pulse rounded-lg shadow"
+        className="h-[250px] w-full bg-theme-secondary animate-pulse rounded-lg shadow"
       />
     );
   }
@@ -39,26 +39,26 @@ const PlanetCardInfo: React.FC<PLANET_CARD_INFO_PROP> = ({ planet, loading, erro
   const backgroundStyle = {
     backgroundImage: `radial-gradient(
       circle at 50% 120%,
-      rgba(${red}, ${green}, ${blue}, 1) 10%,
-      rgba(${red}, ${green}, ${blue}, 0.6) 30%,
-      rgba(0, 0, 0, 0) 80%
+      rgba(${red}, ${green}, ${blue}, 1) 20%,
+      rgba(${red}, ${green}, ${blue}, 0.6) 20%,
+      rgba(0, 0, 0, 0) 60%
     )`,
-    backgroundRepeat: 'no-repeat',
-    backgroundPosition: 'center',
   };
 
-  return (
+  return planetName.toLowerCase() === 'unknown' ? (
+    <div className="h-[250px] w-full flex items-center justify-center"></div>
+  ) : (
     <div
       data-testid="planet-info"
       className="h-[250px]  w-full relative rounded-lg overflow-hidden shadow bg-theme-secondary"
-      style={backgroundStyle}
+      style={red === 0 && green === 0 && blue === 0 ? {} : backgroundStyle}
     >
       {planetData?.IMAGE && (
         <img
           src={planetData.IMAGE}
           data-testid="planet-image"
           alt={`${planetName} planet`}
-          className="absolute bottom-[-250px] left-1/2 -translate-x-1/2 w-full opacity-60 object-contain"
+          className="absolute z-40 bottom-[-250px]  sm:bottom-[-300px] md:bottom-[-250px] lg:bottom-[-250px] left-1/2 -translate-x-1/2 w-full opacity-80 object-contain"
         />
       )}
       <div className="relative p-4">

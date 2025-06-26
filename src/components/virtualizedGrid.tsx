@@ -1,6 +1,5 @@
-// src/components/ui/VirtualizedGrid.tsx
-import React, { useState } from 'react';
-import { FixedSizeGrid } from 'react-window';
+import React, { useCallback, useRef } from 'react';
+import { FixedSizeGrid as Grid, type GridChildComponentProps } from 'react-window';
 import AutoSizer from 'react-virtualized-auto-sizer';
 
 type VirtualizedGridProps<T> = {
@@ -24,73 +23,76 @@ function VirtualizedGrid<T>({
   threshold = 5,
   className = 'h-[calc(100vh-154px)]',
 }: VirtualizedGridProps<T>) {
-  const [lastTriggerRow, setLastTriggerRow] = useState<number | null>(null);
+  const pagesLoaded = useRef<Set<number>>(new Set());
 
-  // load more logic hit
-  // const shouldTriggerLoad = (visibleRowStopIndex: number, columnCount: number): boolean => {
-  //   const lastRow = Math.ceil(items.length / columnCount) - 1;
-  //   const effectiveThreshold = Math.max(0, threshold - 2 * (columnCount - 1));
-  //   return visibleRowStopIndex === lastRow - effectiveThreshold;
-  // };
-  const shouldTriggerLoad = (visibleRowStopIndex: number, columnCount: number) => {
-    const lastRow = Math.ceil(items.length / columnCount) - 1;
-    const effectiveThreshold = Math.max(0, threshold - 2 * (columnCount - 1));
-
-    if (visibleRowStopIndex >= lastRow - effectiveThreshold) {
-      if (lastTriggerRow !== visibleRowStopIndex) {
-        setLastTriggerRow(visibleRowStopIndex);
-        return true;
+  // Move handleItemsRendered to the top level of the component
+  const handleItemsRendered = useCallback(
+    ({
+      visibleRowStopIndex,
+      columnCount,
+      rowCount,
+    }: {
+      visibleRowStopIndex: number;
+      columnCount: number;
+      rowCount: number;
+    }) => {
+      const currentPage = Math.floor(items.length / (columnCount * threshold));
+      if (
+        visibleRowStopIndex >= rowCount - threshold &&
+        canLoadMore &&
+        onLoadMore &&
+        !pagesLoaded.current.has(currentPage)
+      ) {
+        onLoadMore();
+        pagesLoaded.current.add(currentPage);
       }
-    }
-    return false;
-  };
+    },
+    [items.length, canLoadMore, onLoadMore, threshold]
+  );
 
   return (
     <div className={className}>
       <AutoSizer>
-        {({ height, width }) => {
-          if (width === 0 || height === 0) return null; // protect
-
+        {({ width, height }) => {
           const columnCount = Math.max(1, Math.floor(width / minColumnWidth));
-          const rowCount = Math.ceil(items.length / columnCount);
-          const columnWidth = Math.floor(width / columnCount);
+          const estimatedItemCount = canLoadMore
+            ? items.length + columnCount * threshold
+            : items.length;
+          const rowCount = Math.ceil(estimatedItemCount / columnCount);
+
+          // Cell is now defined as a stable callback
+          const Cell = ({ columnIndex, rowIndex, style }: GridChildComponentProps) => {
+            const index = rowIndex * columnCount + columnIndex;
+            const item = items[index];
+
+            return (
+              <div style={style} className="p-2" key={index}>
+                {item ? (
+                  renderItem(item, index)
+                ) : (
+                  <div className="h-full w-full bg-gray-700 rounded-lg animate-pulse" />
+                )}
+              </div>
+            );
+          };
+
+          // Wrap the original handleItemsRendered to inject columnCount and rowCount
+          const onItemsRendered = ({ visibleRowStopIndex }: { visibleRowStopIndex: number }) => {
+            handleItemsRendered({ visibleRowStopIndex, columnCount, rowCount });
+          };
 
           return (
-            <div className="min-h-screen flex flex-col">
-              <FixedSizeGrid
-                height={height}
-                width={width}
-                columnCount={columnCount}
-                columnWidth={columnWidth}
-                rowHeight={itemHeight}
-                rowCount={rowCount}
-                onItemsRendered={({ visibleRowStopIndex }) => {
-                  if (
-                    onLoadMore &&
-                    canLoadMore &&
-                    shouldTriggerLoad(visibleRowStopIndex, columnCount)
-                  ) {
-                    onLoadMore();
-                  }
-                }}
-                outerElementType={React.forwardRef<
-                  HTMLDivElement,
-                  React.HTMLAttributes<HTMLDivElement>
-                >((props, ref) => (
-                  <div {...props} ref={ref} data-testid="virtual-grid-scroll-container" />
-                ))}
-              >
-                {({ rowIndex, columnIndex, style }) => {
-                  const index = rowIndex * columnCount + columnIndex;
-                  const item = items[index];
-                  return item ? (
-                    <div style={style} data-testid="grid-item">
-                      {renderItem(item, index)}
-                    </div>
-                  ) : null;
-                }}
-              </FixedSizeGrid>
-            </div>
+            <Grid
+              columnCount={columnCount}
+              columnWidth={Math.floor(width / columnCount)}
+              height={height}
+              width={width}
+              rowCount={rowCount}
+              rowHeight={itemHeight}
+              onItemsRendered={onItemsRendered}
+            >
+              {Cell}
+            </Grid>
           );
         }}
       </AutoSizer>
