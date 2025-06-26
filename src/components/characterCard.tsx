@@ -39,9 +39,9 @@ const CharacterCard: React.FC<{ character: CHARACTER }> = ({ character }) => {
       <Link to={`/character/${character.uid}`} state={{ character }}>
         <Card>
           <>
-            <div className="flex justify-between items-start mb-10">
+            <div className="flex justify-between items-start mb-10 p-4">
               {/* Name + Gender */}
-              <div className="flex flex-shrink min-w-0 mr-2 items-center">
+              <div className="flex flex-shrink min-w-0 mr-2  items-center">
                 <h2
                   data-testid="character-name"
                   className="text-2xl font-bold text-theme-primary font-display mr-2 truncate"

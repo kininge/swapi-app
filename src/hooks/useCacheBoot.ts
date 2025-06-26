@@ -42,7 +42,6 @@ export const useCacheBoot = () => {
 
           dispatch(setFilms(filmMap));
           dispatch(setCharacterToFilms(characterToFilms));
-          console.log(`✅ Preloaded ${films.length} films and characterToFilms map`);
         }
 
         // 🚀 STARSHIPS
@@ -66,7 +65,6 @@ export const useCacheBoot = () => {
 
           dispatch(setStarship(starshipMap));
           dispatch(setCharacterToStarship(characterToStarship));
-          console.log(`✅ Preloaded ${starships.length} starships and characterToStarship map`);
         }
       } catch (err) {
         console.error('⚠️ Cache boot failed:', err);

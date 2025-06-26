@@ -14,7 +14,7 @@ type CharacterListProps = {
   onLoadMore?: () => void;
 };
 
-const ITEM_HEIGHT = 400;
+const ITEM_HEIGHT = 370;
 
 // skeleton loader
 const renderSkeletons = () => (
@@ -43,7 +43,7 @@ const CharacterList: React.FC<CharacterListProps> = ({
 }) => {
   return (
     <>
-      {characters.length > 0 && error === null && (
+      {characters.length > 0 && (
         <div data-testid="character-list-container">
           <VirtualizedGrid
             items={characters}

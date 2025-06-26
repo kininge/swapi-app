@@ -11,9 +11,6 @@ const CharacterDetailPage: React.FC = () => {
   const { isUpdating, setIsUpdating, updatedCharacter, handleChange, handleSave, handleCancel } =
     useUpdateCharacter(character, latestCharacter);
 
-  console.log('-------> ', isLoading, character, latestCharacter);
-  console.log('-------> ', updatedCharacter);
-
   // return failed conditions
   if (isLoading)
     return (

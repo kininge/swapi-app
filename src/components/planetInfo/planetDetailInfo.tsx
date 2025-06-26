@@ -38,13 +38,13 @@ const PlanetDetailInfo: React.FC<PLANET_DETAIL_INFO_PROP> = ({ planet, loading, 
   const blue = planetData?.COLOR.BLUE ?? 0;
 
   const gradientStyle = {
-    backgroundImage: `radial-gradient(circle at left center, rgba(${red},${green},${blue},1) 10%, rgba(${red},${green},${blue},0.6) 15%, rgba(0, 0, 0, 0) 60%)`,
+    backgroundImage: `radial-gradient(circle at left center, rgba(${red},${green},${blue},1) 5%, rgba(${red},${green},${blue},0.6) 10%, rgba(0, 0, 0, 0) 30%)`,
   };
 
   return (
     <div
       data-testid="planet-info"
-      className="planet-info-card p-4 rounded-xl shadow relative overflow-hidden"
+      className="planet-info-card bg-theme-secondary p-4 rounded-xl shadow relative overflow-hidden"
       style={gradientStyle}
     >
       {planetData?.IMAGE && (
@@ -52,9 +52,10 @@ const PlanetDetailInfo: React.FC<PLANET_DETAIL_INFO_PROP> = ({ planet, loading, 
           data-testid="planet-image"
           src={planetData.IMAGE}
           alt={planetName}
-          className="absolute top-0 left-0 h-full w-auto object-contain opacity-20"
+          className="absolute z-50 left-[-12%] top-1/2 -translate-y-1/2 h-40 w-auto object-contain opacity-80"
         />
       )}
+
       <div className="relative z-10 ml-[90px]">
         <h3 data-testid="planet-name" className="text-2xl font-bold mb-4">
           {planetName}

@@ -7,7 +7,7 @@ const CharacterCardSkeleton: React.FC = () => {
   return (
     <div
       data-testid="character-card-skeleton"
-      className="bg-white dark:bg-gray-800 rounded-xl shadow p-4 mb-4 w-full h-[380px] flex flex-col gap-4"
+      className="bg-theme-secondary  rounded-xl shadow p-4 mb-4 w-full h-[370px] min-w-[380px] flex flex-col gap-4"
     >
       {/* Image placeholder */}
       <div className={clsx('rounded-md', shimmer, 'w-full h-40')} />

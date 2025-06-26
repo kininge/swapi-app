@@ -32,28 +32,43 @@ const PlanetCardInfo: React.FC<PLANET_CARD_INFO_PROP> = ({ planet, loading, erro
   const planetName = planet.properties.name;
   const key = planetName.split(' ').join('_').toUpperCase() as keyof typeof PLANETS;
   const planetData: PLANET_EXTRA_DATA | undefined = PLANETS[key];
+  const red = planetData?.COLOR.RED ?? 0;
+  const green = planetData?.COLOR.GREEN ?? 0;
+  const blue = planetData?.COLOR.BLUE ?? 0;
+
+  const backgroundStyle = {
+    backgroundImage: `radial-gradient(
+      circle at 50% 120%,
+      rgba(${red}, ${green}, ${blue}, 1) 10%,
+      rgba(${red}, ${green}, ${blue}, 0.6) 30%,
+      rgba(0, 0, 0, 0) 80%
+    )`,
+    backgroundRepeat: 'no-repeat',
+    backgroundPosition: 'center',
+  };
 
   return (
     <div
       data-testid="planet-info"
-      className="h-[250px] w-full relative rounded-lg overflow-hidden shadow bg-white"
+      className="h-[250px]  w-full relative rounded-lg overflow-hidden shadow bg-theme-secondary"
+      style={backgroundStyle}
     >
       {planetData?.IMAGE && (
         <img
           src={planetData.IMAGE}
           data-testid="planet-image"
           alt={`${planetName} planet`}
-          className="absolute inset-0 w-full h-full object-cover opacity-30"
+          className="absolute bottom-[-250px] left-1/2 -translate-x-1/2 w-full opacity-60 object-contain"
         />
       )}
       <div className="relative p-4">
-        <h3 data-testid="planet-name" className="text-lg font-semibold text-gray-800">
+        <h3 data-testid="planet-name" className="text-lg text-white font-semibold ">
           {planetName}
         </h3>
-        <p data-testid="planet-climate" className="text-sm text-gray-500">
+        <p data-testid="planet-climate" className="text-sm  text-white">
           Climate: {planet.properties.climate}
         </p>
-        <p data-testid="planet-population" className="text-sm text-gray-500">
+        <p data-testid="planet-population" className="text-sm  text-white">
           Population: {planet.properties.population}
         </p>
       </div>

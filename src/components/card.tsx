@@ -7,9 +7,7 @@ type CARD_PROP = {
 
 export const Card: React.FC<CARD_PROP> = ({ children, className }) => {
   return (
-    <div
-      className={`bg-theme-secondary text-theme-text rounded-3xl p-4 shadow-md ${className ?? ''}`}
-    >
+    <div className={`bg-theme-secondary text-theme-text rounded-2xl shadow-md ${className ?? ''}`}>
       {children}
     </div>
   );

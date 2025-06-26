@@ -15,39 +15,44 @@ const UpdatingForm: React.FC<UPDATING_FORM_PROP> = ({
 }) => {
   return (
     <div data-testid="updating-properties-container" className="space-y-2 mt-4">
-      {['gender', 'height', 'mass', 'skin_color', 'hair_color', 'eye_color'].map((field) => (
-        <div key={field}>
-          <label htmlFor={field} className="block text-sm font-medium capitalize mb-1">
-            {field.replace('_', ' ')}
-          </label>
-          {field === 'gender' ? (
-            <select
-              id="gender"
-              name="gender"
-              data-testid="updating-gender"
-              value={updatedCharacter.gender}
-              onChange={(e) => {
-                handleChange(e);
-              }}
-              className="w-full px-3 outline-none  py-1 border bg-theme-background border-theme-border focus:border-theme-primary rounded-3xl"
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-8">
+        {['gender', 'height', 'mass', 'skin_color', 'hair_color', 'eye_color'].map((field) => (
+          <div key={field} className="flex flex-col">
+            <label
+              htmlFor={field}
+              className="block text-sm font-semibold text-theme-primary capitalize mb-1"
             >
-              <option value="male">Male</option>
-              <option value="female">Female</option>
-              <option value="n/a">No Gender</option>
-            </select>
-          ) : (
-            <input
-              id={field}
-              type="text"
-              name={field}
-              data-testid={`updating-${field}`}
-              value={updatedCharacter[field] || ''}
-              onChange={handleChange}
-              className="w-full px-3 outline-none py-1 border bg-theme-background border-theme-border focus:border-theme-primary rounded-3xl"
-            />
-          )}
-        </div>
-      ))}
+              {field.replace('_', ' ')}
+            </label>
+
+            {field === 'gender' ? (
+              <select
+                id="gender"
+                name="gender"
+                data-testid="updating-gender"
+                value={updatedCharacter.gender}
+                onChange={handleChange}
+                className="w-full px-4 py-2 border border-theme-border bg-theme-background text-theme-text rounded-2xl focus:outline-none focus:ring-2 focus:ring-theme-primary"
+              >
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="n/a">No Gender</option>
+              </select>
+            ) : (
+              <input
+                id={field}
+                type="text"
+                name={field}
+                data-testid={`updating-${field}`}
+                value={updatedCharacter[field] || ''}
+                onChange={handleChange}
+                className="w-full px-4 py-2 border border-theme-border bg-theme-background text-theme-text rounded-2xl focus:outline-none focus:ring-2 focus:ring-theme-primary"
+              />
+            )}
+          </div>
+        ))}
+      </div>
+
       <div className="flex gap-4 mt-2">
         <button
           onClick={handleSave}

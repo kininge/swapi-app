@@ -26,7 +26,6 @@ export const fetchCharacters = createAsyncThunk<
   { rejectValue: string }
 >('character/fetchCharacters', async (page, { rejectWithValue }) => {
   try {
-    console.log('----> page: ', page, hasCharacterPageCalled(page));
     if (!hasCharacterPageCalled(page)) {
       // marked as page called
       markCharacterPageAsCalled(page);

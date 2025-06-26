@@ -32,9 +32,9 @@ built with **React**, **TypeScript**, **RTK Query**, **Redux Persist**, and **Ta
 
 ---
 
-## 🎥 Demo
+## 🎥 Explore
 
-> _(Coming soon after final UX polish. Will include key features like scroll, favorite, edit, and detail view.)_
+![app](./docs/app.png)
 
 ---
 

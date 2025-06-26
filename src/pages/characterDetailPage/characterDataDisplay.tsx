@@ -32,20 +32,19 @@ const CharacterDataDisplay: React.FC<CharacterDataDisplayProps> = ({
   updatableData,
   homeworldUrl,
 }) => {
-  const { birth_year, skin_color, eye_color, gender, hair_color, height, mass } = updatableData;
+  const { birth_year, skin_color, eye_color, hair_color, height, mass } = updatableData;
   const rows: { label: string; value: string | number | JSX.Element | null }[] = [
     { label: 'Skin Color', value: skin_color || 'Unknown' },
     { label: 'Hair Color', value: hair_color || 'Unknown' },
     { label: 'Eye Color', value: eye_color || 'Unknown' },
-    { label: 'Gender', value: gender || 'Unknown' },
     { label: 'Birth Year', value: birth_year || 'Unknown' },
     { label: 'Height', value: height ? `${height} cm` : 'Unknown' },
     { label: 'Mass', value: mass ? `${mass} kg` : 'Unknown' },
   ];
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4 mb-8">
-      <dl className="space-y-2">
+    <>
+      <div className="grid grid-cols-2 sm:grid-cols-2 gap-x-6 gap-y-4 mb-8">
         {rows.map((row) => (
           <div
             data-testid="character-property"
@@ -56,13 +55,14 @@ const CharacterDataDisplay: React.FC<CharacterDataDisplayProps> = ({
             <dt className="text-sm text-gray-400 flex items-center">
               {ICONS[row.label]} {row.label}
             </dt>
-            <dd className="text-base font-medium text-white">{row.value}</dd>
+            <dd className="text-base ml-5 font-medium text-white">{row.value}</dd>
           </div>
         ))}
-      </dl>
-      <br />
-      <PlanetInfo planetUrl={homeworldUrl} variant="detail" />
-    </div>
+      </div>
+      <div className="col-span-1 sm:col-span-2 mb-8">
+        <PlanetInfo planetUrl={homeworldUrl} variant="detail" />
+      </div>
+    </>
   );
 };
 

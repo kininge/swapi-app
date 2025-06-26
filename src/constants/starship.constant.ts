@@ -1,0 +1,15 @@
+export const STARSHIPS: Record<string, string> = {
+  2: '/assets/starships/2.png',
+  3: '/assets/starships/3.png',
+  5: '/assets/starships/5.png',
+  9: '/assets/starships/9.png',
+  10: '/assets/starships/10.png',
+  11: '/assets/starships/11.png',
+  12: '/assets/starships/12.png',
+  13: '/assets/starships/13.png',
+  21: '/assets/starships/21.png',
+  22: '/assets/starships/22.png',
+  23: '/assets/starships/23.png',
+  27: '/assets/starships/27.png',
+  29: '/assets/starships/29.png',
+};

@@ -45,7 +45,7 @@ const Layout = () => {
       </header>
 
       {/* routing content render here */}
-      <main className="p-6 max-w-6xl mx-auto">
+      <main className="p-6 sm:p-0 max-w-6xl mx-auto">
         <Outlet />
       </main>
     </div>
