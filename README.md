@@ -54,9 +54,11 @@ built with **React**, **TypeScript**, **RTK Query**, **Redux Persist**, and **Ta
 
 ---
 
-## ⚙️ High-Level Architecture
+## 🏗️ Architecture & Developer Docs
 
-![SWAPI Architecture](docs/architecture/architecture.png)
+This app follows a **cache-first, offline-ready architecture** designed to minimize API calls and support scalable micro-frontend growth.
+
+![Architecture Diagram](./docs/architecture/architecture.png)
 
 ---
 
@@ -126,14 +128,6 @@ Despite these API limitations, we built a fully-featured, production-quality app
 
 ---
 
-## 🏗️ Architecture & Developer Docs
-
-This app follows a **cache-first, offline-ready architecture** designed to minimize API calls and support scalable micro-frontend growth.
-
-![Architecture Diagram](./docs/architecture/swapi-architecture.png)
-
----
-
 ### 💡 Why Cache-First?
 
 This app is designed as **offline-friendly and cache-prioritized** — aligned with the reality of the [SWAPI.tech](https://swapi.tech) API and the usage expectations of a character browsing tool.
@@ -152,30 +146,27 @@ In distributed system terms (CAP theorem), we **intentionally prioritize _Availa
 
 ---
 
-### 📚 Project Documentation
+## 📚 Documentation Checklist
 
-All key implementation and reasoning details are documented for clarity, onboarding, and handoff readiness.
-
-| Topic                     | Location                                   | Status     |
-|--------------------------|--------------------------------------------|------------|
-| 🛠️ Developer Notes        | [`docs/dev-notes.md`](./docs/dev-notes.md) | ✅ Complete |
-| 🧪 Cypress Setup          | [`docs/cypress-setup.md`](./docs/cypress-setup.md) | ✅ Complete |
-| 🔗 Routing Architecture   | [`docs/routing.md`](./docs/routing.md)     | ⚒️ Optional |
-| 🧑‍💻 Code Style Guide      | [`docs/code-style.md`](./docs/code-style.md) | ✍️ Planned |
-| 🧩 Micro-Frontend Strategy| [`docs/mfe-strategy.md`](./docs/mfe-strategy.md) | ✍️ Planned |
-| ⚙️ CI/CD Pipeline Plan    | [`docs/ci-pipeline.md`](./docs/ci-pipeline.md) | ✍️ Planned |
-| 📄 Assignment Brief       | [`docs/requirements.pdf`](./docs/requirements.pdf) | ✅ Provided |
+| 📌 Topic                         | 📁 Location                                                                                 | 📊 Status       |
+|----------------------------------|---------------------------------------------------------------------------------------------|-----------------|
+| 📄 Assignment Brief              | [`docs/requirements.pdf`](./docs/requirements.pdf)                                         | ✅ Provided      |
+| 🎯 Code Style Guide              | [`docs/code-style.md`](./docs/code-style.md)                                               | ✅ Complete      |
+| 🛠️ Project Setup                | [`docs/setup/init-project.md`](./docs/setup/init-project.md)                              | ✅ Complete      |
+| 🧠 Developer Notes               | [`docs/dev-notes.md`](./docs/dev-notes.md)                                                 | ✅ Complete      |
+| 🗺️ App Architecture Diagram      | [`docs/architecture/architecture.png`](./docs/architecture/architecture.png)               | ✅ Complete      |
+| 📦 Cache Architecture            | [`docs/architecture/cache-architecture.md`](./docs/architecture/cache-architecture.md)     | ✅ Complete      |
+| 🏗️ Architecture Design           | [`docs/architecture/swapi-architecture.md`](./docs/architecture/swapi-architecture.md)     | ✅ Complete      |
+| 🌐 Routing Strategy              | `docs/routing.md`                                                 | ⚒️ Optional      |
+| 🧩 Micro-Frontend Strategy       | `docs/mfe-strategy.md`                                           | ✍️ Planned       |
+| 🚀 CI/CD Pipeline Plan           | `docs/ci-pipeline.md`                                          | ✍️ Planned       |
+| 🧪 Cypress Setup                 | [`docs/setup/cypress-setup.md`](./docs/setup/cypress-setup.md)                             | ✅ Complete      |
+| ✅ Unit Test Coverage Report     | [`docs/coverage/unit_test_coverage.md`](./docs/coverage/unit_test_coverage.md)             | ✅ Complete      |
 
 ---
 
-### 💡 What else you could consider writing (if time allows)
-
-| Doc Idea                   | Purpose                                        |
-|---------------------------|------------------------------------------------|
-| `docs/edit-feature.md`    | Document inline editing flow and cache strategy |
-| `docs/cache-strategy.md`  | Deeper dive into cache boot, deduplication     |
-| `docs/testing.md`         | Explain your TDD workflow and coverage goals   |
-
+✅ = Complete  ✍️ = Planned  ⚒️ = Optional
+                         | 📁 
 ---
 
 ## 🧰 Tech Stack
@@ -214,6 +205,8 @@ A thoughtfully chosen, modern stack focused on performance, maintainability, and
    # The app will run at: http://localhost:5173
 ```
 
+> For setup project from crash consider: [`docs/setup/init-project.md`](./docs/setup/init-project.sh)
+
 ---
 
 ## 🗂️ Project Structure
@@ -240,33 +233,132 @@ A thoughtfully chosen, modern stack focused on performance, maintainability, and
 
 ---
 
-## 🧪 Testing Strategy
+# 🧪 Testing Strategy
 
-This app was built using a **TDD-first mindset** with both unit and integration tests.
-
-### ✅ Unit Testing (Jest + RTL)
-- Component render logic
-- Redux slices (favorites, cache)
-- Utility functions (e.g., deduplication)
-
-### 🔍 Integration Testing (Cypress)
-- Virtualized character list scrolling
-- Navigation from character list → detail page
-- Favorite toggle interaction
-- Inline edit workflow and verification
-
-> Cypress uses `data-character-id` to track virtualized list items and ensure correctness.
-
-### ⚙️ MSW
-Mock Service Worker (MSW) was considered for full API mocking, but skipped due to persistent issues with:
-- `BroadcastChannel` and `TransformStream` polyfills in Node 20+
-- JSDOM limitations
-
-Instead, **we mock RTK Query hooks in unit tests using Jest**.
+This app was built using a **TDD-first mindset** with both **unit** and **end-to-end (E2E)** tests.
 
 ---
 
-### 📦 Test Commands
+## ✅ Unit Testing (Jest + RTL)
+
+Focused on isolated logic and Redux behavior:
+
+- Redux slices:
+  - `characterSlice` (pagination, deduplication)
+  - `favoriteSlice` (toggle, persistence)
+  - `searchSlice`, `editedCharacterSlice`, `cacheSlice`
+- Reusable UI components (e.g. `CharacterCard`, `GenderInfo`)
+- Utility functions:
+  - Deduplication
+  - Pagination keys
+  - Debounce/search logic
+- Custom hooks:
+  - `useCharacterData` (state + API merge)
+
+-- 
+
+## 📈 Unit Test Coverage Summary
+
+Our unit tests are written with full attention to critical paths, reducers, components, and utilities.
+
+> ✅ Overall coverage:  
+> - **Statements:** 92.36%  
+> - **Branches:** 82.19%  
+> - **Functions:** 85.88%  
+> - **Lines:** 92.3%
+
+### 🧾 Detailed Coverage Report
+
+| Directory / File                 | Statements | Branches | Functions | Lines  |
+|----------------------------------|------------|----------|-----------|--------|
+| `components/`                    | 93.67%     | 84.9%    | 88%       | 93.33% |
+| └─ `characterCard.tsx`          | 100%       | 75%      | 100%      | 100%   |
+| └─ `virtualizedGrid.tsx`        | 76.47%     | 66.66%   | 80%       | 76.47% |
+| `features/characters/`          | 88.33%     | 70%      | 85.71%    | 88.07% |
+| └─ `characterSlice.ts`          | 96.49%     | 76.92%   | 100%      | 96.07% |
+| └─ `favoriteSlice.ts`           | 92.3%      | 100%     | 66.66%    | 92.3%  |
+| └─ `searchSlice.ts`             | 72.22%     | 40%      | 77.77%    | 70.96% |
+| `features/cache/`               | 100%       | 100%     | 100%      | 100%   |
+| `features/planets/planetAPI.ts` | 84.61%     | 100%     | 33.33%    | 85.71% |
+| `pages/characterDetailPage/`    | 100%       | 100%     | 100%      | 100%   |
+| `services/networkAPI.ts`        | 100%       | 85.71%   | 100%      | 100%   |
+| `store/`                        | 100%       | 100%     | 100%      | 100%   |
+| `utils/`                        | 100%       | 100%     | 100%      | 100%   |
+
+> 📄 Full coverage report is available at: [`/docs/coverage/unit_test_coverage.md`](./docs/coverage/unit_test_coverage.md)
+
+To regenerate the report:
+
+```bash
+  yarn test:coverage
+```
+
+---
+
+## 🔍 Integration & E2E Testing (Cypress)
+
+Cypress covers full user journeys and UI consistency:
+
+### 🌌 Character List Page (`/`)
+- Infinite scroll (via `react-window`)
+- Page deduplication logic
+- Favorite toggle behavior
+- Route to detail page
+
+### 🔎 Search Page (`/search`)
+- Debounced input search
+- Success state (e.g., "darth" yields results)
+- Empty state with dynamic query (e.g., "bdbad")
+- Route to detail page from search results
+
+### ⭐ Favorites Page (`/favorites`)
+- Favorites are persisted and shown
+- Toggle/unfavorite directly from favorites page
+- Empty state message when no favorites remain
+
+### 🧬 Character Detail Page (`/character/:id`)
+- Loads from URL or location.state
+- Validates character name and all properties
+- Planet info (API or cache)
+- Film/starship presence or absence
+- Inline edit mode:
+  - Edit form renders with correct fields
+  - Update/cancel buttons shown
+- Favorite toggle support
+
+### 🗺️ Routing & Navigation
+- Navbar links work:
+  - Home (`[data-testid="home-route-link"]`)
+  - Search
+  - Favorites
+- Logo (`[data-testid="app-logo-home-route-link"]`) navigates home
+- Back buttons (where present) work as expected
+
+### 🚫 Page Not Found (`/some-gibberish`)
+- 404 message is rendered
+- Home button redirects back
+
+---
+
+## 🧪 Test Utilities
+
+- `makeTestStore` → used in Jest for custom Redux setup
+- `cy.prepareCharacterDetailPage(characterId, shouldExist)` → reusable Cypress command for detail page testing
+
+---
+
+## ⚙️ MSW
+
+Mock Service Worker (MSW) was **considered**, but ultimately skipped due to:
+
+- `BroadcastChannel` + `TransformStream` polyfills not working in Node 20+
+- JSDOM limitations during hook mocking
+
+✅ Instead, **RTK Query hooks are mocked via Jest**.
+
+---
+
+## 🔧 Running Tests
 
 ```bash
    # Run all unit tests
@@ -318,6 +410,21 @@ All features specified in the requirement PDF have been fully implemented — in
 
 ---
 
+## 📤 Submission Structure
+
+| Item                             | Included |
+|----------------------------------|----------|
+| ✅ Source Code                   | Yes      |
+| ✅ README with setup/use         | Yes      |
+| ✅ `docs/architecture.md`        | Yes      |
+| ✅ `SUBMISSION_CHECKLIST`        | Yes      |
+| ✅ Test Coverage Report          | Yes      |
+| ✅ Screenshots / GIFs            | Yes (if time permits) |
+
+The project is organized and submitted in a self-contained manner, ready to be reviewed or deployed.
+
+---
+
 ## 📅 Timeline & Delivery Plan
 
 - ✅ All core requirements completed: character list, detail view, favorites, and search
@@ -352,21 +459,6 @@ The following ideas were explored and scoped but deferred to prioritize testing 
 ## 📜 License
 
 This project is licensed under the [MIT License](./LICENSE).
-
----
-
-## 📤 Submission Structure
-
-| Item                             | Included |
-|----------------------------------|----------|
-| ✅ Source Code                   | Yes      |
-| ✅ README with setup/use         | Yes      |
-| ✅ `docs/architecture.md`        | Yes      |
-| ✅ `SUBMISSION_CHECKLIST`        | Yes      |
-| ✅ Test Coverage Report          | Yes      |
-| ✅ Screenshots / GIFs            | Yes (if time permits) |
-
-The project is organized and submitted in a self-contained manner, ready to be reviewed or deployed.
 
 ---
 

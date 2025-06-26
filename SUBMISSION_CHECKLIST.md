@@ -67,7 +67,7 @@ height, gender & home planet)
 - [x] [`docs/architecture/swapi-architecture.md`](./docs/architecture/swapi-architecture.md): full tech + data architecture
 - [x] [`docs/architecture/cache-architecture.md`](./docs/architecture/cache-architecture.md): in-memory + persistent strategy
 - [x] [`docs/dev-notes.md`](./docs/dev-notes.md): folder structure, design decisions, testing
-- [ ] [`code-style.md`](./docs/code-style.md), 
+- [x] [`code-style.md`](./docs/code-style.md), 
 - [ ] (optional) `ci-pipeline.md`, 
 - [ ] (optional) `mfe-strategy.md`
 

@@ -238,83 +238,170 @@ Together, this ensures a performant, maintainable, and developer-friendly approa
 
 ---
 
-## 🧪 Testing Strategy
+# 🧪 Testing Strategy
 
-Our testing strategy combines **unit**, **integration**, and **end-to-end (E2E)** testing, anchored in a TDD mindset to ensure reliability and maintainability.
+This application was built with a **TDD-first mindset**, balancing **unit**, **integration**, and **end-to-end (E2E)** tests to ensure long-term stability and confidence.
 
 ---
 
-### 🛠️ Tools & Coverage Levels
+## ✅ What’s Covered
+
+| Layer        | Tools                | Scope                                                              |
+|--------------|----------------------|---------------------------------------------------------------------|
+| Unit         | Jest + RTL           | Functions, Redux slices, utilities, UI components, hooks            |
+| Integration  | Jest + RTL           | RTK Query hooks, editing workflows, component logic                 |
+| End-to-End   | Cypress              | Full user journeys: home, search, favorites, character detail, edit |
+| Helpers      | `makeTestStore`, `cy.prepareCharacterDetailPage` | Store injection, reusable Cypress setup              |
+
+---
+
+## ✅ Unit Testing (Jest + RTL)
+
+Focused on isolated logic and Redux behavior:
+
+- **Redux slices**:
+  - `characterSlice`, `favoriteSlice`, `searchSlice`, `editedCharacterSlice`, `cacheSlice`
+- **Reusable UI components**:
+  - `CharacterCard`, `GenderInfo`, `VirtualizedGrid`, etc.
+- **Utility functions**:
+  - Deduplication, pagination keys, debounce logic
+- **Custom hooks**:
+  - `useCharacterData` (location vs. API merging)
+
+---
+
+## 📈 Unit Test Coverage Summary
+
+> ✅ **Statements**: 92.36%  
+> ✅ **Branches**: 82.19%  
+> ✅ **Functions**: 85.88%  
+> ✅ **Lines**: 92.3%
+
+> 📄 See full report here: [`docs/coverage/unit_test_coverage.md`](./docs/coverage/unit_test_coverage.md)
+
+To regenerate:
+
+```bash
+  yarn test:coverage
+```
+
+---
+
+## 🔍 Integration & E2E Testing (Cypress)
+
+Covers **real user journeys and UI correctness** using `Cypress` and `data-testid` selectors.
+
+---
+
+### 🌌 Character List Page (`/`)
+- Infinite scroll implemented via `react-window`
+- Page deduplication logic using `characterPageFetchGuard`
+- Favorite toggle interactions persist to Redux
+- Navigation to character detail page via card click
+
+---
+
+### 🔎 Search Page (`/search`)
+- Debounced search field handles async updates
+- Valid and invalid query states handled:
+  - E.g., "darth" → results shown
+  - "zzz" → empty message
+- Detail page route tested from search results
+
+---
+
+### ⭐ Favorites Page (`/favorites`)
+- Renders favorited characters correctly
+- Toggle/unfavorite directly from favorites page
+- Shows empty state when list is cleared
+
+---
+
+### 🧬 Character Detail Page (`/character/:id`)
+- Loads data from:
+  - `location.state.character` if passed
+  - Or fallback: `useGetCharacterByIdQuery(id)`
+- Verifies:
+  - `character-name` and all properties
+  - `film` and `starship` sections (or empty states)
+  - Planet info fetched (with `data-testid="planet-key"`)
+- Inline edit mode:
+  - Editable fields: `height`, `mass`, `skin_color`, `hair_color`, `eye_color`
+  - `save-updates` and `cancel-updates` buttons tested
+- Favorite button toggles Redux state
+
+---
+
+### 🧭 Routing & Navigation
+- All navbar routes work correctly:
+  - Home → `[data-testid="home-route-link"]`
+  - Search → `[data-testid="search-route-link"]`
+  - Favorites → `[data-testid="favorites-route-link"]`
+  - Logo → `[data-testid="app-logo-home-route-link"]`
+- 404 (`/invalid-page`) renders:
+  - `character-not-found` or page not found text
+  - Go to Home button navigates back
+
+---
+
+### 🚀 Additional Utilities
+
+- `cy.prepareCharacterDetailPage(id, shouldExist)`  
+  → A custom Cypress command that:
+  - Waits for the loader to render/disappear
+  - Verifies detail page or not-found state based on `shouldExist`
+
+```ts
+  cy.prepareCharacterDetailPage('1', true);
+  cy.prepareCharacterDetailPage('1000', false);
+```
+---
+
+## ⚙️ Mocking Strategy (No MSW)
+
+> We considered using **Mock Service Worker (MSW)** for fully intercepting API calls, but opted for a simpler, more stable approach due to environment limitations.
+
+### ❌ Why MSW Was Skipped
+
+- **Node 20+ Compatibility Issues**:
+  - `BroadcastChannel` and `TransformStream` polyfills are not fully supported in the Node environment Cypress and Jest rely on.
+- **JSDOM Limitations**:
+  - Streaming requests and `Response.body` behaviors aren't well supported in testing environments.
+
+---
+
+### ✅ What We Use Instead
 
 - **Jest + React Testing Library**:
-  - Targeting **unit** and **integration** tests for components, hooks, utilities, and Redux slices.
-  - We mock RTK Query hooks rather than SWAPI network calls for simplicity and speed.
+  - RTK Query hooks are mocked directly at the unit level.
+  - This avoids the need for full network simulation.
+  - Example: `jest.mock('../../features/characters/characterApi')`
 
 - **Cypress**:
-  - Handles **E2E scenarios**, focusing on critical user flows:
-    - Infinite scroll behavior
-    - Character detail navigation
-    - Favorites and inline-edit feature
-    - Search and results rendering
-    - Error and retry flows
+  - Cypress tests rely on **real network calls** to SWAPI during development.
+  - Fallback and loading states are tested directly from the UI.
 
-- **TDD (Test-Driven Development)**:
-  - Preferred whenever feasible—tests are written before code to guide design and ensure predictable behavior.
+> ⚡ This strategy keeps tests fast, avoids brittle mocks, and supports progressive enhancement.
 
 ---
 
-#### ♾️ Infinite Scroll Implementation Details
+## 🧪 Test Commands
 
-- Built using `IntersectionObserver` wrapped around a `react-window` virtualized list — enables performant rendering and controlled data loading. *Why*: `IntersectionObserver` is preferred over scroll listeners for performance and simplicity, especially in virtualized scrolling scenarios.
-- The trigger is a `<div ref={loaderRef}>` at the end of the list.
-- **Dev Tip**: Because `react-window` only renders visible items, the scroll detection must observe that outer loader container — not individual list items.
-  
----
+```bash
+  # Run all unit tests
+  yarn test
 
-#### 🧪 Cypress — Scroll Handling Tip
+  # Run tests and generate coverage report
+  yarn test:coverage
 
-When testing infinite-scroll lists in Cypress:
+  # Launch Cypress Test Runner UI
+  yarn cy:open
 
-```js
-  cy.get('[data-testid="character-list-container"]')
-  .scrollTo('bottom', { ensureScrollable: false });
+  # Run Cypress E2E tests in headless/CI mode
+  yarn cy:run
 ```
-- Passing { ensureScrollable: false } prevents failures when the container isn’t yet scrollable — making tests more robust
----
 
-### 🔍 Test Type Map
-
-| Test Type     | What It Covers                                | Key Tools & Patterns                         |
-|---------------|------------------------------------------------|----------------------------------------------|
-| Unit Tests    | Functions, Redux slices, utils, hooks         | Jest, direct function asserts                |
-| Integration   | Component logic + RTK hooks interaction       | Jest + RTL with mocked RTK Query             |
-| E2E           | Real-world user journeys through app flows    | Cypress with data-id selectors and tests     |
-
----
-
-### 📈 Best Practices & Rationale
-
-- **Write testable code** with clean architecture and separation of concerns.
-- **Prioritize E2E tests for critical flows**, avoiding over-testing less vital components.
-- **Limit mocking complexity**: We bypass MSW due to polyfill issues, instead using simpler RTK Query hook mocks.
-- **Avoid flaky tests** by relying on logic-friendly selectors and avoiding fixed wait timing.
-
----
-
-### 🧪 CI Integration & Quality Gates
-
-- Running **unit** & **integration** tests via `yarn test` and coverage checks.
-- Executing **Cypress E2E** on CI with `yarn cy:run`.
-- Tests are run against each PR to ensure **zero regressions** and consistent application reliability.
-
----
-
-### 🧩 Summary
-
-By combining layered tests with focused E2E coverage, our strategy ensures:
-- Rapid iteration through unit and integration tests
-- Real-use verification via Cypress
-- High developer confidence with minimal test upkeep and flakiness
+> 💡 Tip: Use data-testid attributes for stable Cypress selectors.
 
 ---
 
@@ -938,7 +1025,7 @@ As the app matures, here are several strategic improvements that could elevate u
 **Pritam Kininge**  
 Frontend Developer • React, TypeScript, TDD  
 📍 Navi Mumbai, India (UTC+5:30)  
-📅 Last Updated: June 23, 2025
+📅 Last Updated: June 26, 2025
 
 For questions, feedback, or collaboration, feel free to connect:  
 [GitHub](https://github.com/kininge) | [LinkedIn](https://linkedin.com/in/pritam-kininge) | [Leetcode](https://leetcode.com/u/kininge007/)
