@@ -49,16 +49,19 @@ const PlanetDetailInfo: React.FC<PLANET_DETAIL_INFO_PROP> = ({ planet, loading, 
     >
       {planetData?.IMAGE && (
         <img
+          data-testid="planet-image"
           src={planetData.IMAGE}
           alt={planetName}
           className="absolute top-0 left-0 h-full w-auto object-contain opacity-20"
         />
       )}
       <div className="relative z-10 ml-[90px]">
-        <h3 className="text-2xl font-bold mb-4">{planetName}</h3>
+        <h3 data-testid="planet-name" className="text-2xl font-bold mb-4">
+          {planetName}
+        </h3>
         {(['climate', 'population', 'terrain', 'rotation_period', 'orbital_period'] as const).map(
           (key) => (
-            <div className="flex mb-1" key={key}>
+            <div data-testid={`planet-${key}`} className="flex mb-1" key={key}>
               <span className="font-medium w-36 capitalize">
                 {key.replace('_', ' ').replace(/\b\w/g, (l) => l.toUpperCase())}:
               </span>

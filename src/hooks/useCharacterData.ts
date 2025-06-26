@@ -5,7 +5,7 @@ import type { CHARACTER } from '../types';
 import type { UpdatedFields } from '../features/characters/updatedCharacterSlice';
 
 export const useCharacterData = () => {
-  const { id } = useParams();
+  const { characterId } = useParams();
   const location = useLocation();
 
   // priority 1: passed as prop
@@ -18,12 +18,12 @@ export const useCharacterData = () => {
     data: fetchedCharacter,
     isLoading,
     isError,
-  } = useGetCharacterByIdQuery(id!, {
+  } = useGetCharacterByIdQuery(characterId!, {
     skip: !fetchById, // do not call if you already get by props
   });
 
   // get character either from props or fetch by id
-  const character = characterFromState || fetchedCharacter;
+  const character = characterFromState || fetchedCharacter?.result;
 
   // updated character data ---> there no api to update - we cached the update
   const updated: UpdatedFields = useAppSelector((state) => {

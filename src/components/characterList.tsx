@@ -27,7 +27,9 @@ const renderSkeletons = () => (
 
 // error or empty message
 const renderEmptyState = (message: string) => (
-  <div className="text-center text-gray-400 mt-12">{message}</div>
+  <div data-testid="character-card-empty" className="text-center text-gray-400 mt-12">
+    {message}
+  </div>
 );
 
 const CharacterList: React.FC<CharacterListProps> = ({
@@ -42,15 +44,17 @@ const CharacterList: React.FC<CharacterListProps> = ({
   return (
     <>
       {characters.length > 0 && error === null && (
-        <VirtualizedGrid
-          items={characters}
-          itemHeight={ITEM_HEIGHT}
-          minColumnWidth={380}
-          renderItem={(character: CHARACTER) => <CharacterCard character={character} />}
-          canLoadMore={canLoadMore}
-          onLoadMore={onLoadMore}
-          className="h-[calc(100vh-120px)]"
-        />
+        <div data-testid="character-list-container">
+          <VirtualizedGrid
+            items={characters}
+            itemHeight={ITEM_HEIGHT}
+            minColumnWidth={380}
+            renderItem={(character: CHARACTER) => <CharacterCard character={character} />}
+            canLoadMore={canLoadMore}
+            onLoadMore={onLoadMore}
+            className="h-[calc(100vh-120px)]"
+          />
+        </div>
       )}
 
       {/* Skeleton loader (only when list is already rendered) */}

@@ -11,12 +11,25 @@ const CharacterDetailPage: React.FC = () => {
   const { isUpdating, setIsUpdating, updatedCharacter, handleChange, handleSave, handleCancel } =
     useUpdateCharacter(character, latestCharacter);
 
+  console.log('-------> ', isLoading, character, latestCharacter);
+  console.log('-------> ', updatedCharacter);
+
   // return failed conditions
-  if (isLoading) return <p className="text-white p-4">Loading character...</p>;
-  if (isError || !latestCharacter) return <p className="text-red-400 p-4">Character not found.</p>;
+  if (isLoading)
+    return (
+      <p data-testid="character-detail-page-loading" className="text-white p-4">
+        Loading character...
+      </p>
+    );
+  if (isError || !latestCharacter)
+    return (
+      <p data-testid="character-not-found" className="text-red-400 p-4">
+        Character not found.
+      </p>
+    );
 
   return (
-    <div className="p-6 max-w-3xl mx-auto text-white">
+    <div data-testid="character-detail-page" className="p-6 max-w-3xl mx-auto text-white">
       {/* header data like ---> character name, update button, favorite button */}
       <CharacterHeader character={character!} isUpdating={isUpdating} setUpdate={setIsUpdating} />
 

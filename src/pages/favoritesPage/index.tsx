@@ -10,7 +10,7 @@ const FavoritesPage: React.FC = () => {
   const favoriteList: CHARACTER[] = useMemo(() => Object.values(favorites), [favorites]);
 
   return (
-    <div className="h-[calc(100vh-4rem)] p-4">
+    <div data-testid="favorite-list-page" className="h-[calc(100vh-4rem)] p-4">
       <CharacterList
         characters={favoriteList}
         noCharacterMessage="You haven't liked any characters yet!"

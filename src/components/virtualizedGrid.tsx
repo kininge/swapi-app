@@ -56,6 +56,12 @@ function VirtualizedGrid<T>({
                   onLoadMore();
                 }
               }}
+              outerElementType={React.forwardRef<
+                HTMLDivElement,
+                React.HTMLAttributes<HTMLDivElement>
+              >((props, ref) => (
+                <div {...props} ref={ref} data-testid="virtual-grid-scroll-container" />
+              ))}
             >
               {({ rowIndex, columnIndex, style }) => {
                 const index = rowIndex * columnCount + columnIndex;

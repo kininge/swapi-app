@@ -15,14 +15,16 @@ const StarshipList: React.FC<StarshipListProps> = ({ characterId }) => {
     <section aria-label="Character Starships">
       <h3 className="text-xl font-semibold text-theme-primary mb-2">Starships</h3>
       {starshipIds.length === 0 ? (
-        <p className="text-sm italic text-gray-400 mt-6">
+        <p data-testid="no-starship-exist" className="text-sm italic text-gray-400 mt-6">
           This character has not piloted any starships.
         </p>
       ) : (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
           {starshipIds.map((id) => {
             const starship: STARSHIP = starshipsById[id];
-            return starship ? <StarshipCard key={id} starship={starship} /> : null;
+            return starship ? (
+              <StarshipCard data-testid="starship" key={id} starship={starship} />
+            ) : null;
           })}
         </div>
       )}

@@ -22,13 +22,15 @@ const HomePage: React.FC = () => {
   const isLoading = status === 'loading';
 
   return (
-    <CharacterList
-      characters={characters}
-      isLoading={isLoading}
-      isIdle={isIdle}
-      canLoadMore={shouldLoadMore}
-      onLoadMore={loadMore}
-    />
+    <div data-testid="home-page">
+      <CharacterList
+        characters={characters}
+        isLoading={isLoading}
+        isIdle={isIdle}
+        canLoadMore={shouldLoadMore}
+        onLoadMore={loadMore}
+      />
+    </div>
   );
 };
 

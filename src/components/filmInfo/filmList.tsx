@@ -19,13 +19,13 @@ const FilmList: React.FC<FilmListProps> = ({ characterId }) => {
     <section aria-label="Character Films">
       <h3 className="text-xl font-semibold text-theme-primary mb-2">Films</h3>
       {filmIds.length === 0 ? (
-        <p className="text-sm italic text-gray-400 mt-6">
+        <p data-testid="no-film-exist" className="text-sm italic text-gray-400 mt-6">
           This character does not appear in any films.
         </p>
       ) : (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
           {films.map((film: FILM) => {
-            return film ? <FilmCard key={film.uid} film={film} /> : null;
+            return film ? <FilmCard data-testid="film" key={film.uid} film={film} /> : null;
           })}
         </div>
       )}

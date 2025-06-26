@@ -11,7 +11,9 @@ const GenderInfo: React.FC<GENDER_INFO_PROPS> = ({ gender }) => {
 
   return (
     <ToolTip tip={config.label}>
-      <span className={`text-2xl font-bold ${config.color}`}>{config.symbol}</span>
+      <span data-testid="character-gender" className={`text-2xl font-bold ${config.color}`}>
+        {config.symbol}
+      </span>
     </ToolTip>
   );
 };

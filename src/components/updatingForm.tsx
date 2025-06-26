@@ -14,7 +14,7 @@ const UpdatingForm: React.FC<UPDATING_FORM_PROP> = ({
   handleCancel,
 }) => {
   return (
-    <div className="space-y-2 mt-4">
+    <div data-testid="updating-properties-container" className="space-y-2 mt-4">
       {['gender', 'height', 'mass', 'skin_color', 'hair_color', 'eye_color'].map((field) => (
         <div key={field}>
           <label htmlFor={field} className="block text-sm font-medium capitalize mb-1">
@@ -24,6 +24,7 @@ const UpdatingForm: React.FC<UPDATING_FORM_PROP> = ({
             <select
               id="gender"
               name="gender"
+              data-testid="updating-gender"
               value={updatedCharacter.gender}
               onChange={(e) => {
                 handleChange(e);
@@ -39,6 +40,7 @@ const UpdatingForm: React.FC<UPDATING_FORM_PROP> = ({
               id={field}
               type="text"
               name={field}
+              data-testid={`updating-${field}`}
               value={updatedCharacter[field] || ''}
               onChange={handleChange}
               className="w-full px-3 outline-none py-1 border bg-theme-background border-theme-border focus:border-theme-primary rounded-3xl"
@@ -49,11 +51,16 @@ const UpdatingForm: React.FC<UPDATING_FORM_PROP> = ({
       <div className="flex gap-4 mt-2">
         <button
           onClick={handleSave}
+          data-testid="save-updates"
           className="bg-theme-primary hover:bg-theme-primaryHover px-4 py-1 rounded text-white"
         >
           Save
         </button>
-        <button onClick={handleCancel} className="bg-gray-500 px-4 py-1 rounded text-white">
+        <button
+          data-testid="cancel-updates"
+          onClick={handleCancel}
+          className="bg-gray-500 px-4 py-1 rounded text-white"
+        >
           Cancel
         </button>
       </div>

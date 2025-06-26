@@ -5,7 +5,10 @@ const PageNotFound: React.FC = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen flex flex-col justify-center items-center text-theme-primary text-center px-4">
+    <div
+      data-testid="page-not-found-page"
+      className="min-h-screen flex flex-col justify-center items-center text-theme-primary text-center px-4"
+    >
       <h1 className="text-4xl md:text-5xl font-display mb-4">Lost in a galaxy far, far away...</h1>
 
       <p className="text-lg md:text-xl max-w-xl mb-6 text-theme-primary">
@@ -13,6 +16,7 @@ const PageNotFound: React.FC = () => {
       </p>
 
       <button
+        data-testid="go-to-home-button"
         onClick={() => navigate('/home')}
         className="px-6 py-3 rounded-full bg-theme-primary hover:bg-theme-primaryHover text-theme-text font-bold transition"
       >

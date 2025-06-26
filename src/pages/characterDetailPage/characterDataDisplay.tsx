@@ -47,7 +47,12 @@ const CharacterDataDisplay: React.FC<CharacterDataDisplayProps> = ({
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4 mb-8">
       <dl className="space-y-2">
         {rows.map((row) => (
-          <div key={row.label} className="flex flex-col" aria-label={`${row.label}: ${row.value}`}>
+          <div
+            data-testid="character-property"
+            key={row.label}
+            className="flex flex-col"
+            aria-label={`${row.label}: ${row.value}`}
+          >
             <dt className="text-sm text-gray-400 flex items-center">
               {ICONS[row.label]} {row.label}
             </dt>

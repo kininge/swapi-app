@@ -1,7 +1,14 @@
-// cypress/support/e2e.ts
-
-// Import commands.js using ES2015 syntax:
 import './commands';
 
-// Alternatively you can use CommonJS syntax:
-// require('./commands')
+/* eslint-disable @typescript-eslint/no-namespace */
+
+declare global {
+  namespace Cypress {
+    interface Chainable {
+      prepareFavoriteCharacter(): Chainable<void>;
+      prepareCharacterDetailPage(characterId: string, shouldExist: boolean): Chainable<void>;
+    }
+  }
+}
+
+export {};

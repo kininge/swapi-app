@@ -6,8 +6,9 @@ const SearchPage: React.FC = () => {
   const { query, characters, isLoading, error, handleInputChange } = useSearchCharacters();
 
   return (
-    <div className="p-4 max-w-4xl mx-auto">
+    <div data-testid="search-character-page" className="p-4 max-w-4xl mx-auto">
       <input
+        data-testid="search-input"
         type="text"
         value={query}
         onChange={handleInputChange}

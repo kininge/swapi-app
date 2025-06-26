@@ -1,131 +1,49 @@
-describe('Routing Behavior', () => {
-  // check URL reroute
-  it('redirects from / to /home', () => {
-    cy.visit('/').wait(1000);
-
-    cy.url().then((renderedURL: string) => {
-      cy.log('Loaded URL: ', renderedURL); // GUI logs
-      console.log('Loaded URL: ', renderedURL); // electron browser dev tool logs
-      cy.task('logToTerminal', `Loaded URL: ', ${renderedURL}`); // terminal log
-
-      expect(renderedURL).to.include('/home');
-    });
+describe('Top Navigation Bar Routes', () => {
+  beforeEach(() => {
+    cy.visit('/'); // or '/home' depending on your router default
   });
 
-  // check home route rendered
-  it('renders character list on /home', () => {
-    cy.visit('/home');
-
-    cy.url().then((renderedURL: string) => {
-      cy.log('Loaded URL: ', renderedURL); // GUI logs
-      console.log('Loaded URL: ', renderedURL); // electron browser dev tool logs
-      cy.task('logToTerminal', `Loaded URL: ', ${renderedURL}`); // terminal log
-
-      // character list component rendered
-      cy.contains(/characters/i).should('be.visible');
-    });
+  it('navigates to home page via logo', () => {
+    cy.get('[data-testid="app-logo-home-route-link"]').click();
+    cy.url().should('include', '/home');
+    cy.get('[data-testid="character-list-container"]').should('exist');
   });
 
-  // check navigation from /home to /favorites
-  it('navigated from /home to /favorites', () => {
-    cy.visit('/home');
-
-    cy.url().then((renderedURL: string) => {
-      cy.log('Loaded URL: ', renderedURL); // GUI logs
-      console.log('Loaded URL: ', renderedURL); // electron browser dev tool logs
-      cy.task('logToTerminal', `Loaded URL: ', ${renderedURL}`); // terminal log
-
-      // find and click favorites route link from navigation bar
-      cy.get('[data-testid="favorites-route-link"]')
-        .should('exist')
-        .click()
-        .then(() => {
-          cy.url().then((renderedURL: string) => {
-            cy.log('Loaded URL after navigate to favorites: ', renderedURL); // GUI logs
-            console.log('Loaded URL after navigate to favorites: ', renderedURL); // electron browser dev tool logs
-            cy.task('logToTerminal', `Loaded URL after navigate to favorites: ', ${renderedURL}`); // terminal log
-
-            expect(renderedURL).to.include('/favorites');
-          });
-        });
-    });
+  it('navigates to home page via Home link', () => {
+    cy.get('[data-testid="home-route-link"]').click();
+    cy.url().should('include', '/home');
+    cy.get('[data-testid="character-list-container"]').should('exist');
   });
 
-  // check favorites route rendered
-  it('renders favorites page on /favorites', () => {
-    cy.visit('/favorites');
-
-    cy.url().then((renderedURL: string) => {
-      cy.log('Loaded URL: ', renderedURL); // GUI logs
-      console.log('Loaded URL: ', renderedURL); // electron browser dev tool logs
-      cy.task('logToTerminal', `Loaded URL: ', ${renderedURL}`); // terminal log
-
-      // favorite characters component component rendered
-      cy.contains(/favorite characters component/i).should('exist');
-    });
+  it('navigates to search page via Search link', () => {
+    cy.get('[data-testid="search-route-link"]').click();
+    cy.url().should('include', '/search');
+    cy.get('[data-testid="search-input"]').should('exist');
+    cy.get('[data-testid="search-character-page"]').should('exist');
   });
 
-  // check navigation from /favorites to /home
-  it('navigated from /favorites to /home', () => {
-    cy.visit('/favorites');
-
-    cy.url().then((renderedURL: string) => {
-      cy.log('Loaded URL: ', renderedURL); // GUI logs
-      console.log('Loaded URL: ', renderedURL); // electron browser dev tool logs
-      cy.task('logToTerminal', `Loaded URL: ', ${renderedURL}`); // terminal log
-
-      // find and click favorites route link from navigation bar
-      cy.get('[data-testid="home-route-link"]')
-        .should('exist')
-        .click()
-        .then(() => {
-          cy.url().then((renderedURL: string) => {
-            cy.log('Loaded URL after navigate to home: ', renderedURL); // GUI logs
-            console.log('Loaded URL after navigate to home: ', renderedURL); // electron browser dev tool logs
-            cy.task('logToTerminal', `Loaded URL after navigate to home: ', ${renderedURL}`); // terminal log
-
-            expect(renderedURL).to.include('/home');
-          });
-        });
-    });
+  it('navigates to favorites page via Favorites link', () => {
+    cy.get('[data-testid="favorites-route-link"]').click();
+    cy.url().should('include', '/favorites');
+    cy.get('[data-testid="favorite-list-page"]').should('exist');
   });
 
-  // check navigation from /favorites to /home on click app logo
-  it('navigated from /favorites to /home on click app logo', () => {
-    cy.visit('/favorites');
+  it('navigates across all routes sequentially without reload', () => {
+    cy.window().then((initialWindow) => {
+      cy.get('[data-testid="search-route-link"]').click();
+      cy.url().should('include', '/search');
 
-    cy.url().then((renderedURL: string) => {
-      cy.log('Loaded URL: ', renderedURL); // GUI logs
-      console.log('Loaded URL: ', renderedURL); // electron browser dev tool logs
-      cy.task('logToTerminal', `Loaded URL: ', ${renderedURL}`); // terminal log
+      cy.get('[data-testid="favorites-route-link"]').click();
+      cy.url().should('include', '/favorites');
 
-      // find and click app logo route link from header
-      cy.get('[data-testid="app-logo-home-route-link"]')
-        .should('exist')
-        .click()
-        .then(() => {
-          cy.url().then((renderedURL: string) => {
-            cy.log('Loaded URL after navigate to home: ', renderedURL); // GUI logs
-            console.log('Loaded URL after navigate to home: ', renderedURL); // electron browser dev tool logs
-            cy.task('logToTerminal', `Loaded URL after navigate to home: ', ${renderedURL}`); // terminal log
+      cy.get('[data-testid="home-route-link"]').click();
+      cy.url().should('include', '/home');
 
-            expect(renderedURL).to.include('/home');
-          });
-        });
-    });
-  });
+      cy.get('[data-testid="app-logo-home-route-link"]').click();
+      cy.url().should('include', '/home');
 
-  // page not found route rendered on /unknown route
-  it('renders page not found page on /some-unknown-page', () => {
-    cy.visit('/some-unknown-page');
-
-    cy.url().then((renderedURL: string) => {
-      cy.log('Loaded URL: ', renderedURL); // GUI logs
-      console.log('Loaded URL: ', renderedURL); // electron browser dev tool logs
-      cy.task('logToTerminal', `Loaded URL: ', ${renderedURL}`); // terminal log
-
-      // favorite characters component component rendered
-      cy.contains(/pagenotfound component/i).should('exist');
+      // Optional: SPA navigation — window object should remain same
+      cy.window().should('eq', initialWindow);
     });
   });
 });

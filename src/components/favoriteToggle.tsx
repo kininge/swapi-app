@@ -27,6 +27,7 @@ const FavoriteToggle: React.FC<Props> = ({ character, className = '', size = 'md
 
   return (
     <button
+      data-testid="favorite-button"
       title={isFavorite ? 'Remove from Favorites' : 'Add to Favorites'}
       onClick={handleClick}
       className={clsx(

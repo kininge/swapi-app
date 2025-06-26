@@ -41,14 +41,21 @@ const PlanetCardInfo: React.FC<PLANET_CARD_INFO_PROP> = ({ planet, loading, erro
       {planetData?.IMAGE && (
         <img
           src={planetData.IMAGE}
+          data-testid="planet-image"
           alt={`${planetName} planet`}
           className="absolute inset-0 w-full h-full object-cover opacity-30"
         />
       )}
       <div className="relative p-4">
-        <h3 className="text-lg font-semibold text-gray-800">{planetName}</h3>
-        <p className="text-sm text-gray-500">Climate: {planet.properties.climate}</p>
-        <p className="text-sm text-gray-500">Population: {planet.properties.population}</p>
+        <h3 data-testid="planet-name" className="text-lg font-semibold text-gray-800">
+          {planetName}
+        </h3>
+        <p data-testid="planet-climate" className="text-sm text-gray-500">
+          Climate: {planet.properties.climate}
+        </p>
+        <p data-testid="planet-population" className="text-sm text-gray-500">
+          Population: {planet.properties.population}
+        </p>
       </div>
     </div>
   );
