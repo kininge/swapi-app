@@ -69,9 +69,9 @@ function VirtualizedGrid<T>({
               <div style={style} className="p-2" key={index}>
                 {item ? (
                   renderItem(item, index)
-                ) : (
+                ) : canLoadMore ? (
                   <div className="h-full w-full bg-gray-700 rounded-lg animate-pulse" />
-                )}
+                ) : null}
               </div>
             );
           };
