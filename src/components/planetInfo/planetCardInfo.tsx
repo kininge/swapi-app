@@ -58,7 +58,7 @@ const PlanetCardInfo: React.FC<PLANET_CARD_INFO_PROP> = ({ planet, loading, erro
           src={planetData.IMAGE}
           data-testid="planet-image"
           alt={`${planetName} planet`}
-          className="absolute z-40 bottom-[-250px]  sm:bottom-[-300px] md:bottom-[-250px] lg:bottom-[-250px] left-1/2 -translate-x-1/2 w-full opacity-80 object-contain"
+          className="absolute z-40 bottom-[-250px]  sm:bottom-[-100px] md:bottom-[-250px] lg:bottom-[-250px] left-1/2 -translate-x-1/2 w-full opacity-80 object-contain"
         />
       )}
       <div className="relative p-4">

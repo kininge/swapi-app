@@ -32,21 +32,18 @@ function VirtualizedGrid<T>({
     ({
       visibleRowStopIndex,
       columnCount,
-      rowCount,
     }: {
       visibleRowStopIndex: number;
       columnCount: number;
-      rowCount: number;
     }) => {
-      const currentPage = Math.floor(items.length / (columnCount * threshold));
-      if (
-        visibleRowStopIndex >= rowCount - threshold &&
-        canLoadMore &&
-        onLoadMore &&
-        !pagesLoaded.current.has(currentPage)
-      ) {
+      const totalRows = Math.ceil(items.length / columnCount);
+      const visibleRows = Math.ceil(visibleRowStopIndex + 1);
+      const triggerAPI = visibleRows >= Math.max(totalRows - threshold, 1);
+      const page = Math.ceil(items.length / 10);
+
+      if (triggerAPI && canLoadMore && onLoadMore && !pagesLoaded.current.has(page + 1)) {
         onLoadMore();
-        pagesLoaded.current.add(currentPage);
+        pagesLoaded.current.add(page + 1);
       }
     },
     [items.length, canLoadMore, onLoadMore, threshold]
@@ -83,7 +80,7 @@ function VirtualizedGrid<T>({
 
           // Wrap the original handleItemsRendered to inject columnCount and rowCount
           const onItemsRendered = ({ visibleRowStopIndex }: { visibleRowStopIndex: number }) => {
-            handleItemsRendered({ visibleRowStopIndex, columnCount, rowCount });
+            handleItemsRendered({ visibleRowStopIndex, columnCount });
           };
 
           return (
