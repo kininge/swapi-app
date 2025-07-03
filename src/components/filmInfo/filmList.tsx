@@ -23,7 +23,10 @@ const FilmList: React.FC<FilmListProps> = ({ characterId }) => {
           This character does not appear in any films.
         </p>
       ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+        <div
+          data-testid="film-list"
+          className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4"
+        >
           {films.map((film: FILM) => {
             return film ? <FilmCard data-testid="film" key={film.uid} film={film} /> : null;
           })}

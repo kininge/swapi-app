@@ -29,7 +29,10 @@ const FilmCard: React.FC<FilmCardProps> = ({ film }) => {
   const poster: string | undefined = FILMS[film.uid];
 
   return (
-    <div className="aspect-[9/16] bg-theme-secondary rounded-lg shadow-md overflow-hidden flex flex-col">
+    <div
+      data-testid="film"
+      className="aspect-[9/16] bg-theme-secondary rounded-lg shadow-md overflow-hidden flex flex-col"
+    >
       {poster && <img src={poster} alt={title + ' poster'} className="w-full h-48 object-fill" />}
       <div className="flex flex-col justify-between p-3 flex-1">
         <div>

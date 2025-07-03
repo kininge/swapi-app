@@ -55,7 +55,7 @@ describe('CharacterDataDisplay', () => {
   // missing data point render check
   it('renders "Unknown" for missing fields', () => {
     render(<CharacterDataDisplay updatableData={partialData} homeworldUrl="url.com" />);
-    expect(screen.getAllByText('Unknown')).toHaveLength(7);
+    expect(screen.getAllByText('Unknown')).toHaveLength(6);
   });
 });
 

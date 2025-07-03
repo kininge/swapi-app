@@ -13,6 +13,7 @@ const StarshipCard: React.FC<StarshipCardProps> = ({ starship }) => {
   return (
     <div
       key={starship.uid}
+      data-testid="starship"
       className="w-full max-w-3xl h-56 overflow-hidden relative flex items-center"
     >
       {/* Image Section */}

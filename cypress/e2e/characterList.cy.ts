@@ -266,28 +266,39 @@ describe('Character List Page', () => {
     cy.task('logToTerminal', 'character card loader unmounted'); // terminal log
 
     // step 3: character card should be available
-    cy.get('[data-testid="character-card"]').should('have.length.at.least', 1);
+    cy.get('[data-testid="character-card"]')
+      .should('have.length.at.least', 1)
+      .then(($cards) => {
+        const $firstCard = $cards.first();
+        cy.wrap($firstCard).as('firstCard');
+      });
     cy.log(`at least 1 character card rendered`); // GUI logs
     console.log(`at least 1 character card rendered`); // electron browser dev tool logs
     cy.task('logToTerminal', `at least 1 character card rendered`); // terminal log
 
-    // step 4: take first character card and check all properties in it
-    cy.get('[data-testid="character-card"]')
-      .first()
-      .then(($card) => {
-        const characterId: string | undefined = $card.attr('data-character-id');
+    // Step 4: extract character ID safely and alias
+    cy.get('@firstCard')
+      .invoke('attr', 'data-character-id')
+      .then((characterId) => {
         cy.log(`character card id: ${characterId}`); // GUI logs
         console.log(`character card id: ${characterId}`); // electron browser dev tool logs
         cy.task('logToTerminal', `character card id: ${characterId}`); // terminal log
 
         // step 5: click on character card
         expect(characterId).not.equals(undefined);
-        cy.wrap($card).click();
-        cy.log(`character card clicked: ${characterId}`); // GUI logs
-        console.log(`character card clicked: ${characterId}`); // electron browser dev tool logs
-        cy.task('logToTerminal', `character card clicked: ${characterId}`); // terminal log
+        cy.log(`character card is not undefined`); // GUI logs
+        console.log(`character card is not undefined`); // electron browser dev tool logs
+        cy.task('logToTerminal', `character card is not undefined`); // terminal log
 
-        // step 6: check url is same as character id
+        cy.wait(500);
+
+        // Step 6: click on card
+        cy.get('[data-testid="character-card"]').first().click();
+        cy.log(`first character card clicked`); // GUI logs
+        console.log(`first character card clicked`); // electron browser dev tool logs
+        cy.task('logToTerminal', `first character card clicked`); // terminal log
+
+        // step 7: check url is same as character id
         cy.url().then((url: string) => {
           cy.log(`app url: ${url}`); // GUI logs
           console.log(`app url: ${url}`); // electron browser dev tool logs
@@ -296,7 +307,7 @@ describe('Character List Page', () => {
           cy.url().should('include', characterId);
         });
 
-        // step 7: check does character detail page rendered
+        // step 8: check does character detail page rendered
         cy.get('[data-testid="character-detail-page"]', { timeout: 10000 }).should('exist');
         cy.log(`character detail page rendered`); // GUI logs
         console.log(`character detail page rendered`); // electron browser dev tool logs
@@ -338,17 +349,19 @@ describe('Character List Page', () => {
         cy.task('logToTerminal', `BEFORE SCROLL: last character card id: ${lastIdBefore}`);
 
         // step 5: scroll the character list container
-        cy.get('[data-testid="virtual-grid-scroll-container"]').scrollTo('bottom', {
-          duration: 1000,
-        });
+        cy.get('[data-testid="virtual-grid-scroll-container"]')
+          .find('div[style*="overflow"]')
+          .scrollTo('bottom', { duration: 1000 });
 
         // step 6: wait for new data to load
         cy.wait(1000); // wait for pagination to kick in + debounce
 
         // step 7: scroll further the character list container
-        cy.get('[data-testid="virtual-grid-scroll-container"]').scrollTo('bottom', {
-          duration: 1000,
-        });
+        cy.get('[data-testid="virtual-grid-scroll-container"]')
+          .find('div[style*="overflow"]')
+          .scrollTo('bottom', {
+            duration: 1000,
+          });
 
         // step 8: capture new last visible card ID
         cy.get('[data-testid="character-card"]')

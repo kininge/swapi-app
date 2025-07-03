@@ -6,6 +6,7 @@ type VirtualizedGridProps<T> = {
   items: T[];
   itemHeight: number;
   minColumnWidth: number;
+  isLoading?: boolean;
   renderItem: (item: T, index: number) => React.ReactNode;
   canLoadMore: boolean;
   onLoadMore?: () => void;
@@ -17,6 +18,7 @@ function VirtualizedGrid<T>({
   items,
   itemHeight,
   minColumnWidth,
+  isLoading = false,
   renderItem,
   canLoadMore,
   onLoadMore,
@@ -69,8 +71,11 @@ function VirtualizedGrid<T>({
               <div style={style} className="p-2" key={index}>
                 {item ? (
                   renderItem(item, index)
-                ) : canLoadMore ? (
-                  <div className="h-full w-full bg-gray-700 rounded-lg animate-pulse" />
+                ) : canLoadMore || isLoading ? (
+                  <div
+                    data-testid="character-card-skeleton"
+                    className="h-full w-full bg-gray-700 rounded-lg animate-pulse"
+                  />
                 ) : null}
               </div>
             );
@@ -82,17 +87,19 @@ function VirtualizedGrid<T>({
           };
 
           return (
-            <Grid
-              columnCount={columnCount}
-              columnWidth={Math.floor(width / columnCount)}
-              height={height}
-              width={width}
-              rowCount={rowCount}
-              rowHeight={itemHeight}
-              onItemsRendered={onItemsRendered}
-            >
-              {Cell}
-            </Grid>
+            <div data-testid="virtual-grid-scroll-container">
+              <Grid
+                columnCount={columnCount}
+                columnWidth={Math.floor(width / columnCount)}
+                height={height}
+                width={width}
+                rowCount={rowCount}
+                rowHeight={itemHeight}
+                onItemsRendered={onItemsRendered}
+              >
+                {Cell}
+              </Grid>
+            </div>
           );
         }}
       </AutoSizer>

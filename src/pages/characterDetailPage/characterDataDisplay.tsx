@@ -55,7 +55,12 @@ const CharacterDataDisplay: React.FC<CharacterDataDisplayProps> = ({
             <dt className="text-sm text-gray-400 flex items-center">
               {ICONS[row.label]} {row.label}
             </dt>
-            <dd className="text-base ml-5 font-medium text-white">{row.value}</dd>
+            <dd
+              data-testid={`character-property-${row.label.trim().toLowerCase().split(' ').join('_')}`}
+              className="text-base ml-5 font-medium text-white"
+            >
+              {row.value}
+            </dd>
           </div>
         ))}
       </div>

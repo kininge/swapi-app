@@ -19,7 +19,10 @@ const StarshipList: React.FC<StarshipListProps> = ({ characterId }) => {
           This character has not piloted any starships.
         </p>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-8">
+        <div
+          data-testid="starship-list"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-8"
+        >
           {starshipIds.map((id) => {
             const starship: STARSHIP = starshipsById[id];
             return starship ? (

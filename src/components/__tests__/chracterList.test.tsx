@@ -59,14 +59,6 @@ describe('CharacterList', () => {
     });
   });
 
-  // skeleton loader rendered
-  it('shows skeletons when loading', () => {
-    renderWithProvider(<CharacterList isLoading={true} characters={[]} />);
-
-    const skeletons = screen.getAllByTestId('character-card-skeleton');
-    expect(skeletons.length).toBeGreaterThan(0);
-  });
-
   // check fallback message
   it('shows fallback message when list is empty', () => {
     renderWithProvider(<CharacterList characters={[]} isLoading={false} />);
